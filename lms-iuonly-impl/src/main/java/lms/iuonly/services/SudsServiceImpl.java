@@ -30,14 +30,6 @@ public class SudsServiceImpl extends BaseService {
     @Autowired
     DataSource dataSource;
 
-    @GetMapping("/test")
-    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
-    public int test () {
-        log.info("datasource = " + dataSource);
-
-        return 0;
-    }
-
     @GetMapping("/course/siteid/{id}")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
     public SudsCourse getSudsCourseBySiteId(@PathVariable("id") String siteId) {
