@@ -1,0 +1,14 @@
+
+bootstrapSecret: "properties-2020-10-12"
+
+image:
+  tag: latest
+
+env:
+  APP_ENV: snd
+
+ingress:
+  enabled: true
+  hosts:
+    - host: "lms-iuonly-service-snd.apps-test.iu.edu"
+      paths: []
