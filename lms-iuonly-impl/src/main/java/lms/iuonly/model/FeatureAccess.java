@@ -23,10 +23,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class FeatureAccess implements Serializable {
-
-//    public static final String FEATURE_BOX_SHARING = "box.sharing";
-//    public static final String FEATURE_MULTITERM_CROSSLISTING = "multiterm.crosslisting";
-
     @Id
     @Column(name = "FEATURE_ACCESS_ID")
     @GeneratedValue(generator = "FEATURE_ACCESS_ID_SEQ")

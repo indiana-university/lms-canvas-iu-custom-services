@@ -15,7 +15,7 @@ public class SecurityConfig {
 
     @Configuration
     @Order(1)
-    public static class CanvasSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    public static class SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
@@ -23,7 +23,7 @@ public class SecurityConfig {
                   .and()
                   .authorizeRequests()
                   .antMatchers("/**")
-                  .access("hasAuthority('SCOPE_canvas:read') or hasAuthority('SCOPE_canvas:write')")
+                  .access("hasAuthority('SCOPE_iusvcs:read') or hasAuthority('SCOPE_iusvcs:write')")
                   .and()
                   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                   .and()

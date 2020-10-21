@@ -53,9 +53,7 @@ public class IuOnlyClientConfig {
         resourceDetails.setPassword(oAuthConfig.getClientPassword());
         resourceDetails.setAccessTokenUri(oAuthConfig.getAccessTokenUri());
         resourceDetails.setClientAuthenticationScheme(AuthenticationScheme.form);
-
-        // TODO - need to talk to ESI to get these scopes for iuonly
-        resourceDetails.setScope(Arrays.asList("canvas:read", "canvas:write"));
+        resourceDetails.setScope(Arrays.asList("iusvcs:read", "iusvcs:write"));
 
         AccessTokenRequest atr = new DefaultAccessTokenRequest();
         DefaultOAuth2ClientContext clientContext = new DefaultOAuth2ClientContext(atr);
