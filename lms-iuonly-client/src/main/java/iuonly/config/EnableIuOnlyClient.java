@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 /**
  * Add this annotation to an {@code @Configuration} class to expose the
- * various Canvas APIs as beans.
+ * various IU Only APIs as beans.
  * @since 4.0.4
  */
 @Target(ElementType.TYPE)
