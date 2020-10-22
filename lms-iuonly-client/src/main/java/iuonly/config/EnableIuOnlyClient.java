@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 /**
  * Add this annotation to an {@code @Configuration} class to expose the
  * various IU Only APIs as beans.
- * @since 4.0.4
+ * @since 4.0.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
