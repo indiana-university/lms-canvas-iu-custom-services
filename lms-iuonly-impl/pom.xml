@@ -15,7 +15,7 @@
         <docker_repository_name>iuonly</docker_repository_name>
         <helm_service_name>lms-iuonly-impl</helm_service_name>
         <helm_files_directory>/..</helm_files_directory>
-        <lms-canvas-client.version>4.0.11-SNAPSHOT</lms-canvas-client.version>
+        <lms-canvas-client.version>4.0.11</lms-canvas-client.version>
     </properties>
 
     <dependencies>
