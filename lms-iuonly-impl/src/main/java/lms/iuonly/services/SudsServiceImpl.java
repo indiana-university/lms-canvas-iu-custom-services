@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
@@ -16,8 +16,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/suds")
@@ -30,9 +28,9 @@ public class SudsServiceImpl extends BaseService {
     @Autowired
     DataSource dataSource;
 
-    @GetMapping("/course/siteid/{id}")
+    @GetMapping("/course/siteid")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
-    public SudsCourse getSudsCourseBySiteId(@PathVariable("id") String siteId) {
+    public SudsCourse getSudsCourseBySiteId(@RequestParam(value = "id", required = false) String siteId) {
         SudsCourse sudsCourse = null;
         Connection conn = getConnection();
 
