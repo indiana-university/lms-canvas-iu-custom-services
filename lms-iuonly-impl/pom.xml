@@ -13,9 +13,10 @@
 
     <properties>
         <docker_repository_name>iuonly</docker_repository_name>
-        <helm_service_name>lms-iuonly-impl</helm_service_name>
         <helm_files_directory>/..</helm_files_directory>
-        <lms-canvas-client.version>4.0.11</lms-canvas-client.version>
+        <helm_service_name>lms-iuonly-impl</helm_service_name>
+        <jjwt-api.version>0.11.2</jjwt-api.version>
+        <lms-canvas-client.version>4.0.20-SNAPSHOT</lms-canvas-client.version>
     </properties>
 
     <dependencies>
@@ -94,7 +95,7 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.2</version>
+            <version>${jjwt-api.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
