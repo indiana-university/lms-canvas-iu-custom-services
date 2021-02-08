@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +130,8 @@ public class SudsServiceImpl extends BaseService {
             sudsCourse.setClassNumber(classNumber);
 
             // got the stuff, now send it to getSudsClassByCourse to see if it finds anything
-            SudsClass sudsClass = getSudsClassByCourse(sudsCourse, false);
+            SudsClass sudsClass = getSudsClassByCourse(sudsCourse.getSTerm(), sudsCourse.getClassNumber(),
+                  sudsCourse.getCampus(), false);
             return sudsClass != null;
         } else {
             return false;
@@ -138,7 +140,8 @@ public class SudsServiceImpl extends BaseService {
 
     @GetMapping("/class/course")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
-    public SudsClass getSudsClassByCourse(@RequestParam SudsCourse sudsCourse, @RequestParam boolean includeCampus) {
+    public SudsClass getSudsClassByCourse(@RequestParam String strm, @RequestParam String classNumber,
+                                          @RequestParam String campus, @RequestParam boolean includeCampus) {
         long start = System.currentTimeMillis();
 
         SudsClass sudsClass = null;
@@ -155,10 +158,10 @@ public class SudsServiceImpl extends BaseService {
         ResultSet rs = null;
         try {
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, sudsCourse.getSTerm());
-            stmt.setString(2, sudsCourse.getClassNumber());
+            stmt.setString(1, strm);
+            stmt.setString(2, classNumber);
             if (includeCampus) {
-                stmt.setString(3, sudsCourse.getCampus());
+                stmt.setString(3, campus);
             }
             rs = stmt.executeQuery();
 
@@ -166,7 +169,8 @@ public class SudsServiceImpl extends BaseService {
                 sudsClass = translateRsToSudsClass(rs);
             }
             if (sudsClass == null) {
-                log.warn("Could not find SudsClassByCourse:" + sudsCourse);
+                String message = "Could not find SudsClassByCourse: ({0}, {1}, {2})";
+                log.warn(MessageFormat.format(message, strm, classNumber, campus));
                 return null;
             }
         } catch (SQLException e) {
