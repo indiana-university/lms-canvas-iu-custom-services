@@ -3,7 +3,7 @@
     <parent>
         <artifactId>lms-iuonly-parent</artifactId>
         <groupId>edu.iu.uits.lms</groupId>
-        <version>4.0.3</version>
+        <version>4.0.4</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,9 +13,10 @@
 
     <properties>
         <docker_repository_name>iuonly</docker_repository_name>
-        <helm_service_name>lms-iuonly-impl</helm_service_name>
         <helm_files_directory>/..</helm_files_directory>
-        <lms-canvas-client.version>4.0.11</lms-canvas-client.version>
+        <helm_service_name>lms-iuonly-impl</helm_service_name>
+        <jjwt-api.version>0.11.2</jjwt-api.version>
+        <lms-canvas-client.version>4.0.20</lms-canvas-client.version>
     </properties>
 
     <dependencies>
@@ -75,6 +76,11 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
@@ -94,7 +100,7 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.2</version>
+            <version>${jjwt-api.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
