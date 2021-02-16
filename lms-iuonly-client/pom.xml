@@ -3,7 +3,7 @@
     <parent>
         <artifactId>lms-iuonly-parent</artifactId>
         <groupId>edu.iu.uits.lms</groupId>
-        <version>4.0.4</version>
+        <version>4.0.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -36,9 +36,9 @@
             <version>${jackson-datatype-threetenbp.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>${spring-security-oauth2.version}</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>edu.iu.uits.lms</groupId>

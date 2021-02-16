@@ -1,6 +1,5 @@
 package lms.iuonly.services;
 
-import canvas.client.generated.api.AccountsApi;
 import io.swagger.annotations.Api;
 import lms.iuonly.model.FeatureAccess;
 import lms.iuonly.repository.FeatureAccessRepository;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -26,9 +26,6 @@ import java.util.List;
 public class FeatureAccessServiceImpl extends BaseService {
     @Autowired
     private FeatureAccessRepository featureAccessRepository = null;
-
-    @Autowired
-    private AccountsApi accountsApi = null;
 
     @GetMapping("/{id}")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
@@ -103,7 +100,8 @@ public class FeatureAccessServiceImpl extends BaseService {
 
     @GetMapping("/{accountid}/{featureid}")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
-    public boolean isFeatureEnabledForAccount(@PathVariable("featureid") String featureId, @PathVariable("accountid") String accountId) {
+    public boolean isFeatureEnabledForAccount(@PathVariable("featureid") String featureId, @PathVariable("accountid") String accountId,
+                                              @RequestParam(value = "parentAccountIds", required = false) List<String> parentAccountIds) {
         if (featureId == null || accountId == null) {
             throw new IllegalArgumentException("featureId and accountId may not be null. featureId: " + featureId + " accountId: " + accountId);
         }
@@ -120,7 +118,9 @@ public class FeatureAccessServiceImpl extends BaseService {
             relatedAccountIds.add(accountId);
 
             // If the feature is enabled for any of the parent accounts, this account will have access to the feature
-            accountsApi.getParentAccounts(accountId).forEach(parentAccount -> relatedAccountIds.add(parentAccount.getId()));
+            if (parentAccountIds != null && !parentAccountIds.isEmpty()) {
+                relatedAccountIds.addAll(parentAccountIds);
+            }
 
             for (FeatureAccess accessRec : featureAccessRecs) {
                 if (relatedAccountIds.contains(accessRec.getAccountId())) {
