@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -61,5 +60,5 @@ public class SudsAdvisor implements Serializable {
     private String iuActive;
 
     @Column(name = "AUDIT_STAMP")
-    private Date auditStamp;
+    private String auditStampString;
 }

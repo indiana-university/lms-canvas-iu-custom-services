@@ -25,3 +25,5 @@ spring:
     url: ${lms.db.url}
     username: ${lms.db.user}
     password: ${lms.db.password}
+    max-active: 1
+    initial-size: 1

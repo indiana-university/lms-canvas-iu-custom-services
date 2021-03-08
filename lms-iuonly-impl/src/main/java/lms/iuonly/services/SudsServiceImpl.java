@@ -244,7 +244,7 @@ public class SudsServiceImpl extends BaseService {
             sudsAdvisor.setAdvisorLastName(rs.getString(14));
             sudsAdvisor.setStatus(rs.getString(15));
             sudsAdvisor.setIuActive(rs.getString(16));
-            sudsAdvisor.setAuditStamp(rs.getDate(17));
+            sudsAdvisor.setAuditStampString(rs.getString(17));
         } catch (SQLException e) {
             log.error("{}", e);
             throw new IllegalStateException(e);
