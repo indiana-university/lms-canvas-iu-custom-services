@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableResourceServer
 @PropertySource(value = {"classpath:env.properties",
       "${app.fullFilePath}/database.properties",
+      "${app.fullFilePath}/denodo.properties",
       "${app.fullFilePath}/oauth.properties",
       "${app.fullFilePath}/services.properties",
       "${app.fullFilePath}/security.properties"}, ignoreResourceNotFound = true)
