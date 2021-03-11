@@ -3,6 +3,7 @@ package iuonly.config;
 import edu.iu.uits.lms.common.oauth.OAuthConfig;
 import edu.iu.uits.lms.common.oauth.OpenResourceOwnerPasswordResourceDetails;
 import iuonly.client.generated.ApiClient;
+import iuonly.client.generated.api.CanvasDataApi;
 import iuonly.client.generated.api.FeatureAccessApi;
 import iuonly.client.generated.api.SudsApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 
 public class IuOnlyClientConfig {
     private ApiClient apiClient;
+    private ApiClient apiClientAnonymous;
 
     @Value("${lms.service.iuonly.url.${app.env}}")
     private String baseServiceUrl;
@@ -60,11 +62,11 @@ public class IuOnlyClientConfig {
     }
 
     private ApiClient apiClientViaAnonymous() {
-        if (apiClient == null) {
-            apiClient = new ApiClient(iuOnlyClientRestTemplateViaAnonymous());
-            apiClient.setBasePath(baseServiceUrl);
+        if (apiClientAnonymous == null) {
+            apiClientAnonymous = new ApiClient(iuOnlyClientRestTemplateViaAnonymous());
+            apiClientAnonymous.setBasePath(baseServiceUrl);
         }
-        return apiClient;
+        return apiClientAnonymous;
     }
 
     @Bean(name = "iuOnlyClientRestTemplate")
@@ -101,5 +103,10 @@ public class IuOnlyClientConfig {
 
         OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails, clientContext);
         return restTemplate;
+    }
+
+    @Bean
+    public CanvasDataApi canvasDataApi() {
+        return new CanvasDataApi(apiClient());
     }
 }

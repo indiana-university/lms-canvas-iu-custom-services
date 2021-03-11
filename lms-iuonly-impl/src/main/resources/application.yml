@@ -21,7 +21,13 @@ spring:
         usertype:
           autoRegisterUserTypes: true
   datasource:
-    driverClassName: ${lms.db.driverClass}
-    url: ${lms.db.url}
-    username: ${lms.db.user}
-    password: ${lms.db.password}
+    postgres:
+      driverClassName: ${lms.db.driverClass}
+      jdbcUrl: ${lms.db.url}
+      username: ${lms.db.user}
+      password: ${lms.db.password}
+    denodo:
+      driverClassName: ${denodo.db.driverClass}
+      jdbcUrl: ${denodo.db.url}
+      username: ${denodo.db.user}
+      password: ${denodo.db.password}

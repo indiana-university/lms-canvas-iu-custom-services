@@ -3,7 +3,7 @@
     <parent>
         <artifactId>lms-iuonly-parent</artifactId>
         <groupId>edu.iu.uits.lms</groupId>
-        <version>4.0.5</version>
+        <version>4.0.6</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,6 +16,9 @@
         <helm_files_directory>/..</helm_files_directory>
         <helm_service_name>lms-iuonly-impl</helm_service_name>
         <jjwt-api.version>0.11.2</jjwt-api.version>
+        <!-- The denodo-jdbc driver version 7.0.5 maps to the platform version 7.0 20190903 -->
+        <denodo-jdbc.version>7.0.5</denodo-jdbc.version>
+        <denodo-hibernate-dialect.version>7.0.20190403</denodo-hibernate-dialect.version>
     </properties>
 
     <dependencies>
@@ -95,6 +98,16 @@
             <artifactId>jjwt-api</artifactId>
             <version>${jjwt-api.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.denodo.vdp.jdbc</groupId>
+            <artifactId>denodo-jdbc</artifactId>
+            <version>${denodo-jdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.denodo.vdp.jdbc</groupId>
+            <artifactId>denodo-hibernate-dialect</artifactId>
+            <version>${denodo-hibernate-dialect.version}</version>
         </dependency>
     </dependencies>
 

@@ -1,6 +1,7 @@
 package lms.iuonly.services;
 
 import io.swagger.annotations.Api;
+import lms.iuonly.model.SudsAdvisor;
 import lms.iuonly.model.SudsClass;
 import lms.iuonly.model.SudsCourse;
 import lms.iuonly.model.SudsFerpaEntry;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,15 +29,14 @@ import java.util.List;
 @Slf4j
 @Api(tags = "suds")
 public class SudsServiceImpl extends BaseService {
+    private static final String SUDS_ADVISOR_COLUMNS = "emplid, institution, advisor_role, stdnt_advisor_nbr, advisor_id, acad_career, acad_prog, acad_plan, descr, acad_career_descr, iu_ims_username, emailid, first_name, last_name, status, iu_active, audit_stamp";
+    private static final String SUDS_ADVISOR_TABLE = "sysadm.ps_iu_oncext_advr";
     private static final String SUDS_COURSE_COLUMNS = "year, term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_scs_flag, status, iu_active, class_nbr, strm, iu_instrc_mode_des, iu_etext_isbns";
     private static final String SUDS_COURSE_TABLE = "sysadm.ps_iu_oncext_clas";
     private static final String SUDS_ROSTER_FERPA_COLUMNS = "ferpa, iu_ims_username";
     private static final String SUDS_ROSTER_TABLE = "sysadm.ps_iu_oncext_rstr";
     private static final String SUDS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
     private static final String SUDS_CLASS_TABLE = "sysadm.ps_class_tbl";
-
-
-
 
     @Autowired
     DataSource dataSource;
@@ -115,6 +116,43 @@ public class SudsServiceImpl extends BaseService {
         return entries;
     }
 
+    @GetMapping("/activeSudsAdvisorByEmplId/{emplid}")
+    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    public List<SudsAdvisor> getActiveSudsAdvisorByEmplid(@PathVariable("emplid") String emplid) {
+        long start = System.currentTimeMillis();
+        Connection conn = getConnection();
+
+        List<SudsAdvisor> sudsAdvisors = new ArrayList<SudsAdvisor>();
+
+        String sql = "select " + SUDS_ADVISOR_COLUMNS + " from " + SUDS_ADVISOR_TABLE + " where emplid = ? and IU_ACTIVE = ?";
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, emplid);
+            stmt.setString(2, "A");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                SudsAdvisor advisor = translateRsToSudsAdvisor(rs);
+                sudsAdvisors.add(advisor);
+            }
+            if (sudsAdvisors.isEmpty()) {
+                log.warn("Could not find SudsAdvisorByEmplid:" + emplid);
+                return sudsAdvisors;
+            }
+        } catch (SQLException e) {
+            log.error("{}", e);
+            throw new IllegalStateException(e);
+        } finally {
+            close(conn, stmt, rs);
+        }
+        long end = System.currentTimeMillis();
+        log.debug("getActiveSudsAdvisorByEmplid took " + (end - start) + " millis");
+        return sudsAdvisors;
+    }
+
     @GetMapping("/isSisCourse")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
     public boolean isLegitSisCourse(@RequestParam String iu_site_id, @RequestParam String strm) {
@@ -182,6 +220,36 @@ public class SudsServiceImpl extends BaseService {
         long end = System.currentTimeMillis();
         log.debug("getSudsClassByCourse took " + (end - start) + " millis");
         return sudsClass;
+    }
+
+    /*
+     * simply translates JDBC into POJO without closing ResultSet
+     */
+    private SudsAdvisor translateRsToSudsAdvisor(ResultSet rs) {
+        SudsAdvisor sudsAdvisor = new SudsAdvisor();
+        try {
+            sudsAdvisor.setEmplId(rs.getString(1));
+            sudsAdvisor.setInstitution(rs.getString(2));
+            sudsAdvisor.setAdvisorRole(rs.getString(3));
+            sudsAdvisor.setStudentAdvisorNumber(rs.getString(4));
+            sudsAdvisor.setAdvisorId(rs.getString(5));
+            sudsAdvisor.setAcademicCareer(rs.getString(6));
+            sudsAdvisor.setAcademicProgram(rs.getString(7));
+            sudsAdvisor.setAcademicPlan(rs.getString(8));
+            sudsAdvisor.setDescription(rs.getString(9));
+            sudsAdvisor.setAcademicCareerDescription(rs.getString(10));
+            sudsAdvisor.setAdvisorIuImsUsername(rs.getString(11));
+            sudsAdvisor.setAdvisorEmailId(rs.getString(12));
+            sudsAdvisor.setAdvisorFirstName(rs.getString(13));
+            sudsAdvisor.setAdvisorLastName(rs.getString(14));
+            sudsAdvisor.setStatus(rs.getString(15));
+            sudsAdvisor.setIuActive(rs.getString(16));
+            sudsAdvisor.setAuditStampString(rs.getString(17));
+        } catch (SQLException e) {
+            log.error("{}", e);
+            throw new IllegalStateException(e);
+        }
+        return sudsAdvisor;
     }
 
     private SudsClass translateRsToSudsClass(ResultSet rs) {
