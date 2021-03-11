@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 public class IuOnlyClientConfig {
     private ApiClient apiClient;
+    private ApiClient apiClientAnonymous;
 
     @Value("${lms.service.iuonly.url.${app.env}}")
     private String baseServiceUrl;
@@ -61,11 +62,11 @@ public class IuOnlyClientConfig {
     }
 
     private ApiClient apiClientViaAnonymous() {
-        if (apiClient == null) {
-            apiClient = new ApiClient(iuOnlyClientRestTemplateViaAnonymous());
-            apiClient.setBasePath(baseServiceUrl);
+        if (apiClientAnonymous == null) {
+            apiClientAnonymous = new ApiClient(iuOnlyClientRestTemplateViaAnonymous());
+            apiClientAnonymous.setBasePath(baseServiceUrl);
         }
-        return apiClient;
+        return apiClientAnonymous;
     }
 
     @Bean(name = "iuOnlyClientRestTemplate")
