@@ -32,7 +32,6 @@ public class PostgresDBConfig {
     @Bean(name = "postgresdb")
     @ConfigurationProperties(prefix = "spring.datasource.postgres")
     @Primary
-    // setting up the data source for the beer database.
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }

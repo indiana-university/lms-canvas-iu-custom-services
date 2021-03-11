@@ -12,7 +12,6 @@ public class DenodoDBConfig {
 
     @Bean(name = "denododb")
     @ConfigurationProperties(prefix = "spring.datasource.denodo")
-    // setting up the data source for the denodo database.
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
