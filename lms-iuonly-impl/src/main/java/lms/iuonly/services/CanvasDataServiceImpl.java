@@ -2,11 +2,13 @@ package lms.iuonly.services;
 
 import io.swagger.annotations.Api;
 import lms.iuonly.exceptions.CanvasDataServiceException;
+import lms.iuonly.model.Enrollment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +120,107 @@ public class CanvasDataServiceImpl extends BaseService {
         }
 
         return userMap;
+    }
+
+    @GetMapping("/rosterInfo/{canvasCourseId}")
+    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    public List<Enrollment> getRosterStatusInfo(@PathVariable String canvasCourseId) throws CanvasDataServiceException {
+        String sql = "select " +
+              "    user_dim.canvas_id AS canvas_user_id," +
+              "    user_dim.sortable_name AS name, " +
+              "    pseudonym_dim.unique_name AS username, " +
+              "    role_dim.name AS role, " +
+              "    course_section_dim.name AS section, " +
+              "    enrollment_dim.workflow_state AS status, " +
+              "    enrollment_dim.created_at As createdDate, " +
+              "    enrollment_dim.updated_at AS updatedDate " +
+              "FROM course_dim course_dim " +
+              "  INNER JOIN course_section_dim course_section_dim ON (course_dim.id = course_section_dim.course_id) " +
+              "  INNER JOIN enrollment_dim enrollment_dim ON (course_section_dim.id = enrollment_dim.course_section_id) " +
+              "  INNER JOIN enrollment_fact enrollment_fact ON (enrollment_dim.id = enrollment_fact.enrollment_id) " +
+              "  INNER JOIN user_dim user_dim ON (enrollment_fact.user_id = user_dim.id) " +
+              "  INNER JOIN pseudonym_dim pseudonym_dim ON (user_dim.id = pseudonym_dim.user_id) " +
+              "  INNER JOIN role_dim role_dim ON (enrollment_dim.role_id = role_dim.id) " +
+              "where course_dim.canvas_id = ? and user_dim.sortable_name != 'Student, Test' " +
+              "  AND pseudonym_dim.workflow_state = 'active' " +
+              "ORDER BY user_dim.sortable_name, user_dim.canvas_id, course_section_dim.name, role_dim.name desc, pseudonym_dim.unique_name desc";
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection conn = getConnection();
+        validateConnection(conn);
+
+        List<Enrollment> rosterStatusInfoList = new ArrayList<>();
+        List<Enrollment> updatedRosterStatusInfoList = new ArrayList<>();
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, canvasCourseId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Enrollment enrollment = new Enrollment();
+                enrollment.setCanvasUserId(rs.getString("canvas_user_id"));
+                enrollment.setName(rs.getString("name"));
+                enrollment.setUsername(rs.getString("username"));
+                enrollment.setRole(rs.getString("role"));
+                enrollment.setSection(rs.getString("section"));
+                enrollment.setStatus(rs.getString("status"));
+                enrollment.setCreatedDate(rs.getTimestamp("createdDate"));
+                enrollment.setUpdatedDate(rs.getTimestamp("updatedDate"));
+
+                rosterStatusInfoList.add(enrollment);
+            }
+
+            updatedRosterStatusInfoList = removeDuplicates(rosterStatusInfoList);
+            log.info("Found " + updatedRosterStatusInfoList.size() + " enrollment records for Canvas course " + canvasCourseId);
+
+        } catch (SQLException e) {
+            log.error("error getting roster information for course " + canvasCourseId, e);
+            throw new IllegalStateException(e);
+        } finally {
+            close(conn, ps, rs);
+        }
+        return updatedRosterStatusInfoList;
+    }
+
+    private List<Enrollment> removeDuplicates(List<Enrollment> rosterStatusInfoList) {
+        List<Enrollment> updatedRosterStatusInfoList = new ArrayList<>();
+        String reportInfoUserId = "";
+        String reportInfoRole = "";
+        String reportInfoSection = "";
+        String reportInfoStatus = "";
+
+        for (Enrollment enrollment : rosterStatusInfoList) {
+            String userId = enrollment.getCanvasUserId();
+            String role = enrollment.getRole();
+            String section = enrollment.getSection();
+            String status = enrollment.getStatus();
+
+            //if the user is the new user, definitely add that user's record in.
+            // if the user the same, check role, section, status. If one or any of them is different, add the record in,
+            // otherwise, (means it is the duplicate), ignore it.
+            if ((userId != null) && !userId.equals(reportInfoUserId)) {
+                updatedRosterStatusInfoList.add(enrollment);
+
+                reportInfoUserId = userId;
+                reportInfoRole = role;
+                reportInfoSection = section;
+                reportInfoStatus = status;
+            } else if ((role != null && !role.equals(reportInfoRole))
+                  || (section != null && !section.equals(reportInfoSection))
+                  || (status != null && !status.equals(reportInfoStatus))) {
+                updatedRosterStatusInfoList.add(enrollment);
+
+                reportInfoUserId = userId;
+                reportInfoRole = role;
+                reportInfoSection = section;
+                reportInfoStatus = status;
+            } else {
+                continue;
+            }
+        }
+        return updatedRosterStatusInfoList;
     }
 
     private Connection getConnection() {
