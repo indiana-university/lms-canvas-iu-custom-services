@@ -26,6 +26,7 @@ spring:
       jdbcUrl: ${lms.db.url}
       username: ${lms.db.user}
       password: ${lms.db.password}
+      type: org.springframework.jdbc.datasource.DriverManagerDataSource
     denodo:
       driverClassName: ${denodo.db.driverClass}
       jdbcUrl: ${denodo.db.url}
