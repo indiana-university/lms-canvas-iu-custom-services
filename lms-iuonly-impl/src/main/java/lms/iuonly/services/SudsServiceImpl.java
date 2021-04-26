@@ -222,6 +222,34 @@ public class SudsServiceImpl extends BaseService {
         return sudsClass;
     }
 
+    @GetMapping("/iuoccCount/{siteId}")
+    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    public int getIuoccCourseCount(@PathVariable String siteId) {
+        int courseCount = 0;
+        Connection conn = getConnection();
+
+        String sql = "select count(*) as total from " + SUDS_COURSE_TABLE + " where iu_occ_site_id = ?";
+        log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, siteId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                courseCount = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            log.error("Error getting suds course", e);
+            throw new IllegalStateException();
+        } finally {
+            close(conn, stmt, rs);
+        }
+        return courseCount;
+    }
+
     /*
      * simply translates JDBC into POJO without closing ResultSet
      */
