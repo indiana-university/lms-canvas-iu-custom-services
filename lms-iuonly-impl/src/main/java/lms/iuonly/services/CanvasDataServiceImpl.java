@@ -2,6 +2,7 @@ package lms.iuonly.services;
 
 import io.swagger.annotations.Api;
 import lms.iuonly.exceptions.CanvasDataServiceException;
+import lms.iuonly.model.CloseExpireCourse;
 import lms.iuonly.model.Enrollment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by chmaurer on 11/10/15.
@@ -221,6 +224,61 @@ public class CanvasDataServiceImpl extends BaseService {
             }
         }
         return updatedRosterStatusInfoList;
+    }
+
+    @GetMapping("/manuallyCreatedCourses")
+    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    public List<CloseExpireCourse> getManuallyCreatedCoursesWithTerm() throws CanvasDataServiceException {
+        List<CloseExpireCourse> notificationCourses = new ArrayList<>();
+        String sql = "select distinct " +
+              "course_dim.canvas_id AS canvas_id, " +
+              "course_dim.name AS coursename, " +
+              "course_dim.conclude_at AS end_date, " +
+              "enrollment_term_dim.canvas_id AS canvas_term_id, " +
+              "communication_channel_dim.address AS emailAdress " +
+              "FROM course_dim course_dim " +
+              "INNER JOIN course_section_dim course_section_dim ON (course_dim.id = course_section_dim.course_id) " +
+              "INNER JOIN enrollment_dim enrollment_dim ON (course_section_dim.id = enrollment_dim.course_section_id) " +
+              "INNER JOIN enrollment_fact enrollment_fact ON (enrollment_dim.id = enrollment_fact.enrollment_id) " +
+              "INNER JOIN user_dim user_dim ON (enrollment_fact.user_id = user_dim.id) " +
+              "INNER JOIN pseudonym_dim pseudonym_dim ON (user_dim.id = pseudonym_dim.user_id) " +
+              "INNER JOIN role_dim role_dim ON (enrollment_dim.role_id = role_dim.id) " +
+              "INNER JOIN enrollment_term_dim enrollment_term_dim ON (course_dim.enrollment_term_id = enrollment_term_dim.id) " +
+              "INNER JOIN communication_channel_dim communication_channel_dim ON (communication_channel_dim.user_id = user_dim.id) " +
+              "where  course_dim.sis_source_id is null "  +
+              "and role_dim.base_role_type='TeacherEnrollment' " +
+              "and course_dim.workflow_state != 'deleted' " +
+              "and role_dim.workflow_state != 'deleted' " +
+              "and enrollment_dim.workflow_state != 'deleted' " +
+              "and communication_channel_dim.position=1 " +
+              "order by course_dim.canvas_id ";
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection conn = getConnection();
+        validateConnection(conn);
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            while (rs.next()) {
+                CloseExpireCourse course = new CloseExpireCourse();
+                course.setCanvasCourseId(rs.getString("canvas_id"));
+                course.setCourseName(rs.getString("coursename"));
+                course.setEndDate(rs.getTimestamp("end_date", cal));
+                course.setTermId(rs.getString("canvas_term_id"));
+                course.setEmailAddress(rs.getString("emailAdress"));
+                notificationCourses.add(course);
+            }
+        } catch (SQLException e) {
+            log.error("Error getting data", e);
+            throw new IllegalStateException(e);
+        } finally {
+            close(conn, ps, rs);
+        }
+        return notificationCourses;
     }
 
     private Connection getConnection() {
