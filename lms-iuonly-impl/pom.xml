@@ -3,7 +3,7 @@
     <parent>
         <artifactId>lms-iuonly-parent</artifactId>
         <groupId>edu.iu.uits.lms</groupId>
-        <version>4.0.9</version>
+        <version>4.0.10</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
