@@ -5,6 +5,7 @@ import edu.iu.uits.lms.common.oauth.OpenResourceOwnerPasswordResourceDetails;
 import iuonly.client.generated.ApiClient;
 import iuonly.client.generated.api.CanvasDataApi;
 import iuonly.client.generated.api.FeatureAccessApi;
+import iuonly.client.generated.api.NodeHierarchyApi;
 import iuonly.client.generated.api.SudsApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,5 +109,10 @@ public class IuOnlyClientConfig {
     @Bean
     public CanvasDataApi canvasDataApi() {
         return new CanvasDataApi(apiClient());
+    }
+
+    @Bean
+    public NodeHierarchyApi nodeHierarchyApi() {
+        return new NodeHierarchyApi(apiClient());
     }
 }
