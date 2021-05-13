@@ -23,7 +23,7 @@ env:
 imagePullSecrets:
   - name: registry-prod
 
-#javaOpts: "-XX:MaxRAMPercentage=90 -XshowSettings:vm"
+javaOpts: "-XX:MaxRAMPercentage=90 -XshowSettings:vm"
 
 activeProfiles: "none"
 
