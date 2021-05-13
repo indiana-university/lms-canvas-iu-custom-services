@@ -4,6 +4,7 @@ import edu.iu.uits.lms.common.oauth.OAuthConfig;
 import edu.iu.uits.lms.common.oauth.OpenResourceOwnerPasswordResourceDetails;
 import iuonly.client.generated.ApiClient;
 import iuonly.client.generated.api.CanvasDataApi;
+import iuonly.client.generated.api.CourseTemplatingApi;
 import iuonly.client.generated.api.FeatureAccessApi;
 import iuonly.client.generated.api.NodeHierarchyApi;
 import iuonly.client.generated.api.SudsApi;
@@ -114,5 +115,10 @@ public class IuOnlyClientConfig {
     @Bean
     public NodeHierarchyApi nodeHierarchyApi() {
         return new NodeHierarchyApi(apiClient());
+    }
+
+    @Bean
+    public CourseTemplatingApi courseTemplatingApi() {
+        return new CourseTemplatingApi(apiClient());
     }
 }
