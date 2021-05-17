@@ -7,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -15,18 +15,18 @@ import java.util.Date;
 public class BaseObject {
 
    @Column(name = "date_created")
-   private Date dateCreated;
+   private OffsetDateTime dateCreated;
 
    @Column(name = "date_modified")
-   private Date dateModified;
+   private OffsetDateTime dateModified;
 
    @PreUpdate
    @PrePersist
    public void updateTimeStamps() {
       if (dateCreated==null) {
-         dateCreated = new Date();
+         dateCreated = OffsetDateTime.now();
       }
-      dateModified = new Date();
+      dateModified = OffsetDateTime.now();
    }
 
 }
