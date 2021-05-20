@@ -3,6 +3,7 @@ package iuonly.config;
 import edu.iu.uits.lms.common.oauth.OAuthConfig;
 import edu.iu.uits.lms.common.oauth.OpenResourceOwnerPasswordResourceDetails;
 import iuonly.client.generated.ApiClient;
+import iuonly.client.generated.api.BatchEmailApi;
 import iuonly.client.generated.api.CanvasDataApi;
 import iuonly.client.generated.api.CourseTemplatingApi;
 import iuonly.client.generated.api.FeatureAccessApi;
@@ -120,5 +121,10 @@ public class IuOnlyClientConfig {
     @Bean
     public CourseTemplatingApi courseTemplatingApi() {
         return new CourseTemplatingApi(apiClient());
+    }
+
+    @Bean
+    public BatchEmailApi batchEmailApi() {
+        return new BatchEmailApi(apiClient());
     }
 }
