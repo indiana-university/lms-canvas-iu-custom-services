@@ -249,7 +249,7 @@ public class CanvasDataServiceImpl extends BaseService {
               "and role_dim.base_role_type='TeacherEnrollment' " +
               "and course_dim.workflow_state != 'deleted' " +
               "and role_dim.workflow_state != 'deleted' " +
-              "and enrollment_dim.workflow_state != 'deleted' " +
+              "and enrollment_dim.workflow_state = 'active' " +
               "and communication_channel_dim.position=1 " +
               "order by course_dim.canvas_id ";
 
