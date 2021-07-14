@@ -31,12 +31,14 @@ import java.util.List;
 public class SudsServiceImpl extends BaseService {
     private static final String SUDS_ADVISOR_COLUMNS = "emplid, institution, advisor_role, stdnt_advisor_nbr, advisor_id, acad_career, acad_prog, acad_plan, descr, acad_career_descr, iu_ims_username, emailid, first_name, last_name, status, iu_active, audit_stamp";
     private static final String SUDS_ADVISOR_TABLE = "sysadm.ps_iu_oncext_advr";
-    private static final String SUDS_COURSE_COLUMNS = "year, term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_scs_flag, status, iu_active, class_nbr, strm, iu_instrc_mode_des, iu_etext_isbns";
+    private static final String SUDS_COURSE_COLUMNS = "year, term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_scs_flag, status, iu_active, class_nbr, strm, iu_instrc_mode_des";
+    //, iu_etext_isbns
     private static final String SUDS_COURSE_TABLE = "sysadm.ps_iu_oncext_clas";
     private static final String SUDS_ROSTER_FERPA_COLUMNS = "ferpa, iu_ims_username";
     private static final String SUDS_ROSTER_TABLE = "sysadm.ps_iu_oncext_rstr";
     private static final String SUDS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
     private static final String SUDS_CLASS_TABLE = "sysadm.ps_class_tbl";
+    private static final String SUDS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
     DataSource dataSource;
@@ -48,6 +50,39 @@ public class SudsServiceImpl extends BaseService {
         Connection conn = getConnection();
 
         String sql = "select " + SUDS_COURSE_COLUMNS + " from " + SUDS_COURSE_TABLE + " where iu_site_id = ?";
+        log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, siteId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                sudsCourse = translateRsToSudsCourse(rs);
+            }
+            if (sudsCourse == null) {
+                log.warn("Could not find SudsCourseBySiteId:" + siteId);
+                return null;
+            }
+        } catch (SQLException e) {
+            log.error("Error getting suds course", e);
+            throw new IllegalStateException();
+        } finally {
+            close(conn, stmt, rs);
+        }
+
+        return sudsCourse;
+    }
+
+    @GetMapping("/course/archive/siteid")
+    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    public SudsCourse getSudsArchiveCourseBySiteId(@RequestParam(value = "id", required = false) String siteId) {
+        SudsCourse sudsCourse = null;
+        Connection conn = getConnection();
+
+        String sql = "select " + SUDS_COURSE_COLUMNS + " from " + SUDS_COURSE_ARCHIVE_TABLE + " where iu_site_id = ?";
         log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
 
         PreparedStatement stmt = null;
@@ -317,7 +352,7 @@ public class SudsServiceImpl extends BaseService {
             sudsCourse.setClassNumber(rs.getString(13));
             sudsCourse.setSTerm(rs.getString(14));
             sudsCourse.setInstructionMode(rs.getString(15));
-            sudsCourse.setEtextIsbns(rs.getString(16));
+//            sudsCourse.setEtextIsbns(rs.getString(16));
         } catch (SQLException e) {
             log.error("Error: ", e);
             throw new IllegalStateException(e);
