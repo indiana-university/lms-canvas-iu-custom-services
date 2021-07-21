@@ -6,6 +6,7 @@ import iuonly.client.generated.ApiClient;
 import iuonly.client.generated.api.BatchEmailApi;
 import iuonly.client.generated.api.CanvasDataApi;
 import iuonly.client.generated.api.CourseTemplatingApi;
+import iuonly.client.generated.api.DeptProvisioningUserApi;
 import iuonly.client.generated.api.FeatureAccessApi;
 import iuonly.client.generated.api.NodeHierarchyApi;
 import iuonly.client.generated.api.SudsApi;
@@ -126,5 +127,24 @@ public class IuOnlyClientConfig {
     @Bean
     public BatchEmailApi batchEmailApi() {
         return new BatchEmailApi(apiClient());
+    }
+
+    /**
+     * This is the primary bean that will be used under normal circumstances
+     * @return
+     */
+    @Bean
+    @Primary
+    public DeptProvisioningUserApi deptProvisioningUserApi() {
+        return new DeptProvisioningUserApi(apiClient());
+    }
+
+    /**
+     * This is an alternative bean that can be used in cases where there was no authentication (open endpoint)
+     * @return
+     */
+    @Bean(name = "deptProvisioningUserApiViaAnonymous")
+    public DeptProvisioningUserApi deptProvisioningUserApiAnonymous() {
+        return new DeptProvisioningUserApi(apiClientViaAnonymous());
     }
 }
