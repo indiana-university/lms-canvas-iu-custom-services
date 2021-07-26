@@ -28,7 +28,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class ErrorContactService {
+public class ErrorContactBusinessService {
     @Autowired
     @Qualifier("DerdackRestTemplate")
     private RestTemplate restTemplate;
@@ -100,13 +100,13 @@ public class ErrorContactService {
         }
 
         ErrorContactEvent errorContactEvent = new ErrorContactEvent();
-        errorContactEvent.setJobCode(jobCode);
+        errorContactEvent.setErrorContactJobProfile(errorContactJobProfile);
         errorContactEvent.setMessage(message);
         errorContactEvent.setAction(doPage ? "PAGED" : "EMAILED");
 
         ErrorContactResponse resultErrorContactResponse = null;
 
-        String subject = "LMS Microservices job " + jobCode;
+        String subject = "[" + derdackConfig.getEnv() + "]- LMS Microservices job " + jobCode;
 
         // Page and email
         if (doPage) {
@@ -163,10 +163,10 @@ public class ErrorContactService {
 
         EmailDetails emailDetails = new EmailDetails();
 
-        emailDetails.setFrom("lmsnoreply@iu.edu");
+        emailDetails.setPriority(EmailDetails.PriorityEnum.HIGH);
         emailDetails.setSubject(subject);
         emailDetails.setBody(emailBody.toString());
-        emailDetails.setRecipients(Arrays.asList("dsobiera@iu.edu"));
+        emailDetails.setRecipients(Arrays.asList(derdackConfig.getRecipientEmail()));
 
         emailApi.sendEmail(emailDetails, false);
 

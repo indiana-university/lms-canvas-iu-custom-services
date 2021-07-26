@@ -36,3 +36,5 @@ derdack:
   baseUrl: ${derdack.rest.baseUrl}
   apiKey: ${derdack.rest.apiKey}
   team: ${derdack.rest.team}
+  recipientEmail: dsobiera@iu.edu
+  env: ${app.env}

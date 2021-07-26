@@ -169,6 +169,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>de.jpdigital</groupId>
+                <artifactId>hibernate54-ddl-maven-plugin</artifactId>
+                <configuration>
+                    <dialects>
+                        <param>h2</param>
+                        <param>postgresql9</param>
+                    </dialects>
+                    <packages>
+                        <param>lms.iuonly</param>
+                    </packages>
+                    <!--                    <persistenceXml>src/main/webapp/META-INF/canvasnotifier-persistence.xml</persistenceXml>-->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

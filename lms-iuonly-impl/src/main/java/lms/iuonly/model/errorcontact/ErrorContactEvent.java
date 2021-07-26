@@ -1,5 +1,6 @@
 package lms.iuonly.model.errorcontact;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -9,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
@@ -23,7 +26,11 @@ import java.util.Date;
 @NamedQueries({
 // sysdate - 30/blah blah equates to 30 minutes
         @NamedQuery(name = "ErrorContactEvent.numberOfJobCodesNoOlderThanMinutes",
-                query = "select count(errorContactEvent) FROM ErrorContactEvent errorContactEvent WHERE jobCode = :jobCode AND sysdate - :minutes / (24*60) <= errorContactEvent.created")
+                query = "select count(errorContactEvent) " +
+                        "FROM ErrorContactEvent errorContactEvent " +
+                        "WHERE errorContactJobProfile.jobCode = :jobCode AND " +
+                               "errorContactJobProfile.active = true AND " +
+                               "sysdate - :minutes / (24*60) <= errorContactEvent.created")
 })
 @SequenceGenerator(name = "ERROR_CONTACT_EVENT_ID_SEQ", sequenceName = "ERROR_CONTACT_EVENT_ID_SEQ", allocationSize = 1)
 @Data
@@ -36,9 +43,10 @@ public class ErrorContactEvent implements Serializable {
     @NonNull
     private Long id;
 
-    @Column(name = "JOB_CODE")
-    @NonNull
-    private String jobCode;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "JOB_CODE", referencedColumnName = "JOB_CODE", nullable = false)
+    private ErrorContactJobProfile errorContactJobProfile;
 
     @Column
     @NonNull

@@ -8,4 +8,6 @@ import org.springframework.stereotype.Component;
 @Component("ErrorContactJobProfileRepository")
 public interface ErrorContactJobProfileRepository extends PagingAndSortingRepository<ErrorContactJobProfile, Long> {
     ErrorContactJobProfile findByJobCode(@Param("jobCode") String jobCode);
+    void activateAllJobProfiles();
+    void deactivateAllJobProfiles();
 }

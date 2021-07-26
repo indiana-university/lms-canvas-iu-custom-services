@@ -6,23 +6,18 @@ import lms.iuonly.model.errorcontact.ErrorContactJobProfile;
 import lms.iuonly.model.errorcontact.ErrorContactResponse;
 import lms.iuonly.repository.ErrorContactEventRepository;
 import lms.iuonly.repository.ErrorContactJobProfileRepository;
-import lms.iuonly.services.business.ErrorContactService;
+import lms.iuonly.services.business.ErrorContactBusinessService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,11 +27,11 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes={ErrorContactService.class})
+@ContextConfiguration(classes={ErrorContactBusinessService.class})
 @Slf4j
-public class ErrorContactServiceTest {
+public class ErrorContactBusinessServiceTest {
     @Autowired
-    private ErrorContactService errorContactService;
+    private ErrorContactBusinessService errorContactBusinessService;
 
     @Qualifier("DerdackRestTemplate")
     @MockBean
@@ -56,7 +51,7 @@ public class ErrorContactServiceTest {
 
     @Test(expected = ResponseStatusException.class)
     public void testErrorContactService_job_not_found() throws Exception {
-        ErrorContactResponse errorContactResponse = errorContactService.postEvent("JOB1", "This is the test");
+        ErrorContactResponse errorContactResponse = errorContactBusinessService.postEvent("JOB1", "This is the test");
     }
 
     @Test
@@ -64,7 +59,7 @@ public class ErrorContactServiceTest {
         ErrorContactJobProfile errorContactJobProfile = new ErrorContactJobProfile();
 
         Mockito.when(errorContactJobProfileRepository.findByJobCode("JOB1")).thenReturn(errorContactJobProfile);
-        ErrorContactResponse errorContactResponse = errorContactService.postEvent("JOB1", "This is the test");
+        ErrorContactResponse errorContactResponse = errorContactBusinessService.postEvent("JOB1", "This is the test");
 
         Assert.assertEquals("-1", errorContactResponse.getExternalId());
         Assert.assertEquals("Emailed ONLY", errorContactResponse.getStatus());
@@ -83,7 +78,7 @@ public class ErrorContactServiceTest {
 
         Mockito.when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(responseEntity);
 
-        ErrorContactResponse errorContactResponse = errorContactService.postEvent("JOB1", "This is the test", true);
+        ErrorContactResponse errorContactResponse = errorContactBusinessService.postEvent("JOB1", "This is the test", true);
 
         Assert.assertEquals("TEST PAGED", errorContactResponse.getStatus());
     }
@@ -96,7 +91,7 @@ public class ErrorContactServiceTest {
 
         Mockito.when(errorContactEventRepository.numberOfJobCodesNoOlderThanMinutes(anyString(), anyInt())).thenReturn(1);
         Mockito.when(errorContactJobProfileRepository.findByJobCode("JOB1")).thenReturn(errorContactJobProfile);
-        ErrorContactResponse errorContactResponse = errorContactService.postEvent("JOB1", "This is the test");
+        ErrorContactResponse errorContactResponse = errorContactBusinessService.postEvent("JOB1", "This is the test");
 
         Assert.assertEquals("-1", errorContactResponse.getExternalId());
         Assert.assertEquals("Emailed ONLY", errorContactResponse.getStatus());
@@ -117,7 +112,7 @@ public class ErrorContactServiceTest {
 
         Mockito.when(restTemplate.postForEntity(anyString(), any(), any())).thenReturn(responseEntity);
 
-        ErrorContactResponse errorContactResponse = errorContactService.postEvent("JOB1", "This is the test", true);
+        ErrorContactResponse errorContactResponse = errorContactBusinessService.postEvent("JOB1", "This is the test", true);
 
         Assert.assertEquals("TEST PAGED", errorContactResponse.getStatus());
     }
