@@ -14,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,7 +53,12 @@ public class ErrorContactBusinessService {
 
         if (errorContactJobProfile == null) {
             log.error("No job profile found for jobCode = {}", jobCode);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid job code");
+
+            ErrorContactResponse resultErrorContactResponse = new ErrorContactResponse();
+            resultErrorContactResponse.setExternalId("-1");
+            resultErrorContactResponse.setStatus("jobCode not found");
+
+            return resultErrorContactResponse;
         }
 
         log.info("Found job profile = {}", errorContactJobProfile);
@@ -106,7 +109,7 @@ public class ErrorContactBusinessService {
 
         ErrorContactResponse resultErrorContactResponse = null;
 
-        String subject = "[" + derdackConfig.getEnv() + "]- LMS Microservices job " + jobCode;
+        String subject = "[LMS Microservices Error Contact " + derdackConfig.getEnv() + "]- LMS Microservices job " + jobCode;
 
         // Page and email
         if (doPage) {

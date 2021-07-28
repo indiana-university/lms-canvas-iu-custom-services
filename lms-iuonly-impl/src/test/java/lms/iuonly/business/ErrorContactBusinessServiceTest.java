@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -49,9 +48,13 @@ public class ErrorContactBusinessServiceTest {
     @MockBean
     private DerdackConfig derdackConfig;
 
-    @Test(expected = ResponseStatusException.class)
+    @Test
     public void testErrorContactService_job_not_found() throws Exception {
         ErrorContactResponse errorContactResponse = errorContactBusinessService.postEvent("JOB1", "This is the test");
+
+        Assert.assertNotNull(errorContactResponse);
+        Assert.assertEquals("-1", errorContactResponse.getExternalId());
+        Assert.assertEquals("jobCode not found", errorContactResponse.getStatus());
     }
 
     @Test
