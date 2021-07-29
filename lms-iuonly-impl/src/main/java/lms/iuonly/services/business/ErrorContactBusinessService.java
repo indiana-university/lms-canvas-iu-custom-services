@@ -109,7 +109,7 @@ public class ErrorContactBusinessService {
 
         ErrorContactResponse resultErrorContactResponse = null;
 
-        String subject = "[LMS Microservices Error Contact " + derdackConfig.getEnv() + "]- LMS Microservices job " + jobCode;
+        String subject = emailApi.getStandardHeader() + " LMS Microservices job " + jobCode;
 
         // Page and email
         if (doPage) {
