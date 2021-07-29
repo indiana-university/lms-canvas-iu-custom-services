@@ -41,6 +41,7 @@ public class SudsServiceImpl extends BaseService {
     private static final String SUDS_ROSTER_TABLE = "sysadm.ps_iu_oncext_rstr";
     private static final String SUDS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
     private static final String SUDS_CLASS_TABLE = "sysadm.ps_class_tbl";
+    private static final String SUDS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
     DataSource dataSource;
@@ -52,6 +53,39 @@ public class SudsServiceImpl extends BaseService {
         Connection conn = getConnection();
 
         String sql = "select " + SUDS_COURSE_COLUMNS + " from " + SUDS_COURSE_TABLE + " where iu_site_id = ?";
+        log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, siteId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                sudsCourse = translateRsToSudsCourse(rs);
+            }
+            if (sudsCourse == null) {
+                log.warn("Could not find SudsCourseBySiteId:" + siteId);
+                return null;
+            }
+        } catch (SQLException e) {
+            log.error("Error getting suds course", e);
+            throw new IllegalStateException();
+        } finally {
+            close(conn, stmt, rs);
+        }
+
+        return sudsCourse;
+    }
+
+    @GetMapping("/course/archive/siteid")
+    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    public SudsCourse getSudsArchiveCourseBySiteId(@RequestParam(value = "id", required = false) String siteId) {
+        SudsCourse sudsCourse = null;
+        Connection conn = getConnection();
+
+        String sql = "select " + SUDS_COURSE_COLUMNS + " from " + SUDS_COURSE_ARCHIVE_TABLE + " where iu_site_id = ?";
         log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
 
         PreparedStatement stmt = null;
