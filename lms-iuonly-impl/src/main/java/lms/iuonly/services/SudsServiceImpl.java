@@ -355,7 +355,7 @@ public class SudsServiceImpl extends BaseService {
             sudsCourse.setClassNumber(rs.getString(13));
             sudsCourse.setSTerm(rs.getString(14));
             sudsCourse.setInstructionMode(rs.getString(15));
-//            sudsCourse.setEtextIsbns(rs.getString(16));
+            sudsCourse.setEtextIsbns(rs.getString(16));
         } catch (SQLException e) {
             log.error("Error: ", e);
             throw new IllegalStateException(e);
