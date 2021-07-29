@@ -11,7 +11,7 @@
     <artifactId>lms-iuonly-parent</artifactId>
     <name>iuonly-services</name>
     <packaging>pom</packaging>
-    <version>4.0.17-SNAPSHOT</version>
+    <version>4.0.18-SNAPSHOT</version>
 
     <modules>
         <module>lms-iuonly-impl</module>
