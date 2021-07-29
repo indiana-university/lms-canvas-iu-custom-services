@@ -37,4 +37,3 @@ derdack:
   apiKey: ${derdack.rest.apiKey}
   team: ${derdack.rest.team}
   recipientEmail: iu-uits-es-ess-lms-notify@exchange.iu.edu
-  env: ${app.env}

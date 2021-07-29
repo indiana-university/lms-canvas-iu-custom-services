@@ -17,7 +17,6 @@ public class DerdackConfig {
     private String apiKey;
     private String team;
     private String recipientEmail;
-    private String env;
 
     @Bean(name = "DerdackRestTemplate")
     public RestTemplate restTemplate() {
