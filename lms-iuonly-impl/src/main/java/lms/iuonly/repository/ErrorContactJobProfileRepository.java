@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 @Component("ErrorContactJobProfileRepository")
-public interface ErrorContactJobProfileRepository extends PagingAndSortingRepository<ErrorContactJobProfile, Long> {
+public interface ErrorContactJobProfileRepository extends PagingAndSortingRepository<ErrorContactJobProfile, String> {
     ErrorContactJobProfile findByJobCode(@Param("jobCode") String jobCode);
     void activateAllJobProfiles();
     void deactivateAllJobProfiles();
