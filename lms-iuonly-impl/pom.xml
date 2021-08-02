@@ -19,9 +19,15 @@
         <!-- The denodo-jdbc driver version 7.0.5 maps to the platform version 7.0 20190903 -->
         <denodo-jdbc.version>7.0.5</denodo-jdbc.version>
         <denodo-hibernate-dialect.version>7.0.20190403</denodo-hibernate-dialect.version>
+        <lms-email-client.version>4.0.13</lms-email-client.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>edu.iu.uits.lms</groupId>
+            <artifactId>lms-email-client</artifactId>
+            <version>${lms-email-client.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -162,6 +168,20 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>de.jpdigital</groupId>
+                <artifactId>hibernate54-ddl-maven-plugin</artifactId>
+                <configuration>
+                    <dialects>
+                        <param>h2</param>
+                        <param>postgresql9</param>
+                    </dialects>
+                    <packages>
+                        <param>lms.iuonly</param>
+                    </packages>
+                    <!--                    <persistenceXml>src/main/webapp/META-INF/canvasnotifier-persistence.xml</persistenceXml>-->
+                </configuration>
             </plugin>
         </plugins>
     </build>

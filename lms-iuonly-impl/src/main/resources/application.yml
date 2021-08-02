@@ -32,3 +32,8 @@ spring:
       jdbcUrl: ${denodo.db.url}
       username: ${denodo.db.user}
       password: ${denodo.db.password}
+derdack:
+  baseUrl: ${derdack.rest.baseUrl}
+  apiKey: ${derdack.rest.apiKey}
+  team: ${derdack.rest.team}
+  recipientEmail: iu-uits-es-ess-lms-notify@exchange.iu.edu
