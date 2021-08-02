@@ -5,16 +5,20 @@ import lms.iuonly.model.SudsAdvisor;
 import lms.iuonly.model.SudsClass;
 import lms.iuonly.model.SudsCourse;
 import lms.iuonly.model.SudsFerpaEntry;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +41,7 @@ public class SudsServiceImpl extends BaseService {
     private static final String SUDS_ROSTER_TABLE = "sysadm.ps_iu_oncext_rstr";
     private static final String SUDS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
     private static final String SUDS_CLASS_TABLE = "sysadm.ps_class_tbl";
+    private static final String SUDS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
     DataSource dataSource;
@@ -74,16 +79,49 @@ public class SudsServiceImpl extends BaseService {
         return sudsCourse;
     }
 
-    @GetMapping("/ferpa")
+    @GetMapping("/course/archive/siteid")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
-    public List<SudsFerpaEntry> getFerpaEntriesByListOfSisUserIds(@RequestParam List<String> iuImsUsernames,
+    public SudsCourse getSudsArchiveCourseBySiteId(@RequestParam(value = "id", required = false) String siteId) {
+        SudsCourse sudsCourse = null;
+        Connection conn = getConnection();
+
+        String sql = "select " + SUDS_COURSE_COLUMNS + " from " + SUDS_COURSE_ARCHIVE_TABLE + " where iu_site_id = ?";
+        log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, siteId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                sudsCourse = translateRsToSudsCourse(rs);
+            }
+            if (sudsCourse == null) {
+                log.warn("Could not find SudsCourseBySiteId:" + siteId);
+                return null;
+            }
+        } catch (SQLException e) {
+            log.error("Error getting suds course", e);
+            throw new IllegalStateException();
+        } finally {
+            close(conn, stmt, rs);
+        }
+
+        return sudsCourse;
+    }
+
+    @PostMapping("/ferpa")
+    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    public List<SudsFerpaEntry> getFerpaEntriesByListOfSisUserIds(@RequestBody ListWrapper listWrapper,
                                                                   @RequestParam boolean justYs) {
         long start = System.currentTimeMillis();
         List<SudsFerpaEntry> entries = new ArrayList<>();
         Connection conn = getConnection();
 
         String sql = "select distinct " + SUDS_ROSTER_FERPA_COLUMNS + " from " + SUDS_ROSTER_TABLE + " where " +
-              LmsSqlUtils.buildWhereInClause("iu_ims_username", iuImsUsernames, false);
+              LmsSqlUtils.buildWhereInClause("iu_ims_username", listWrapper.getListItems(), false);
 
         if (justYs) {
             sql = sql + " and ferpa = ?";
@@ -376,5 +414,10 @@ public class SudsServiceImpl extends BaseService {
         } catch (SQLException sqle) {
             log.error("Error closing connection ", sqle);
         }
+    }
+
+    @Data
+    private static class ListWrapper implements Serializable {
+        private List<String> listItems;
     }
 }
