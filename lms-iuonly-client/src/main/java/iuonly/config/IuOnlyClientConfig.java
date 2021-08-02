@@ -6,6 +6,7 @@ import iuonly.client.generated.ApiClient;
 import iuonly.client.generated.api.BatchEmailApi;
 import iuonly.client.generated.api.CanvasDataApi;
 import iuonly.client.generated.api.CourseTemplatingApi;
+import iuonly.client.generated.api.ErrorContactApi;
 import iuonly.client.generated.api.DeptProvisioningUserApi;
 import iuonly.client.generated.api.FeatureAccessApi;
 import iuonly.client.generated.api.NodeHierarchyApi;
@@ -127,6 +128,11 @@ public class IuOnlyClientConfig {
     @Bean
     public BatchEmailApi batchEmailApi() {
         return new BatchEmailApi(apiClient());
+    }
+
+    @Bean
+    public ErrorContactApi errorContactApi() {
+        return new ErrorContactApi(apiClient());
     }
 
     /**
