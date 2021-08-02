@@ -133,6 +133,7 @@ public class IuOnlyClientConfig {
     @Bean
     public ErrorContactApi errorContactApi() {
         return new ErrorContactApi(apiClient());
+    }
 
     /**
      * This is the primary bean that will be used under normal circumstances
