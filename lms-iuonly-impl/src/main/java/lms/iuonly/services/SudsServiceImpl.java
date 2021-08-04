@@ -1,11 +1,11 @@
 package lms.iuonly.services;
 
 import io.swagger.annotations.Api;
+import lms.iuonly.model.ListWrapper;
 import lms.iuonly.model.SudsAdvisor;
 import lms.iuonly.model.SudsClass;
 import lms.iuonly.model.SudsCourse;
 import lms.iuonly.model.SudsFerpaEntry;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -416,8 +415,4 @@ public class SudsServiceImpl extends BaseService {
         }
     }
 
-    @Data
-    private static class ListWrapper implements Serializable {
-        private List<String> listItems;
-    }
 }

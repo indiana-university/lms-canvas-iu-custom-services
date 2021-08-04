@@ -4,14 +4,16 @@ import io.swagger.annotations.Api;
 import lms.iuonly.exceptions.CanvasDataServiceException;
 import lms.iuonly.model.CloseExpireCourse;
 import lms.iuonly.model.Enrollment;
+import lms.iuonly.model.ListWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
@@ -62,14 +64,16 @@ public class CanvasDataServiceImpl extends BaseService {
         }
     }
 
-    @GetMapping("/activemap")
+    @PostMapping("/activemap")
     @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
-    public Map<String, String> getActiveUserMapOfIuUsernameToCanvasId(@RequestParam(value = "iuUsernames") List<String> iuUsernames) throws CanvasDataServiceException {
+    public Map<String, String> getActiveUserMapOfIuUsernameToCanvasId(@RequestBody ListWrapper iuUsernameWrapper) throws CanvasDataServiceException {
         Map<String, String> userMap = new HashMap<>();
 
-        if (iuUsernames == null || iuUsernames.isEmpty()) {
+        if (iuUsernameWrapper == null || iuUsernameWrapper.getListItems() == null || iuUsernameWrapper.getListItems().isEmpty()) {
             return userMap;
         }
+
+        List<String> iuUsernames = iuUsernameWrapper.getListItems();
 
         // denodo can't seem to handle queries over 1000 in the where.  Not just in the IN but total (even OR'd wheres)
         // so we'll go through the list 1000 at a time to build the map
