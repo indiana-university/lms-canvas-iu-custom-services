@@ -1,7 +1,7 @@
 
 projectedSecret:
   - secret:
-      name: "properties-2021-07-14"
+      name: "properties-2021-06-07"
   - secret:
       name: "lms-security-properties-20201014"
 
@@ -16,3 +16,9 @@ ingress:
   hosts:
     - host: "lms-iuonly-service.apps.iu.edu"
       paths: []
+
+activeProfiles: "prd"
+
+serviceAccountName: lms-iuonly-impl-prd
+
+cluster: es-prod

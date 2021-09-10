@@ -27,6 +27,9 @@ javaOpts: "-XX:MaxRAMPercentage=90 -XshowSettings:vm"
 
 activeProfiles: "none"
 
+vault:
+  enabled: true
+
 service:
   type: ClusterIP
   port: 8080
