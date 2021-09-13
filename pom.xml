@@ -3,7 +3,7 @@
     <parent>
         <groupId>edu.iu.uits.lms</groupId>
         <artifactId>lms2Wow</artifactId>
-        <version>4.0.11</version>
+        <version>4.0.12</version>
         <relativePath />
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
     <artifactId>lms-iuonly-parent</artifactId>
     <name>iuonly-services</name>
     <packaging>pom</packaging>
-    <version>4.0.20</version>
+    <version>4.0.21</version>
 
     <modules>
         <module>lms-iuonly-impl</module>
