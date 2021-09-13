@@ -1,7 +1,7 @@
 
 projectedSecret:
   - secret:
-      name: "properties-2021-07-14"
+      name: "properties-2021-06-07"
 
 image:
   tag: latest
@@ -14,3 +14,9 @@ ingress:
   hosts:
     - host: "lms-iuonly-service-reg.apps-test.iu.edu"
       paths: []
+
+activeProfiles: "reg"
+
+serviceAccountName: lms-iuonly-impl-reg
+
+cluster: es-test
