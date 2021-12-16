@@ -1,32 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>edu.iu.uits.lms</groupId>
-        <artifactId>lms2Wow</artifactId>
-        <version>4.0.12</version>
-        <relativePath />
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.4</version>
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lms-iuonly-parent</artifactId>
+    <groupId>edu.iu.uits.lms</groupId>
+    <artifactId>lms-iuonly-impl</artifactId>
     <name>iuonly-services</name>
-    <packaging>pom</packaging>
-    <version>4.0.22-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <version>5.0.0-SNAPSHOT</version>
 
-    <modules>
-        <module>lms-iuonly-impl</module>
-        <module>lms-iuonly-client</module>
-    </modules>
+    <properties>
+        <!-- The denodo-jdbc driver version 7.0.5 maps to the platform version 7.0 20190903 -->
+        <denodo-jdbc.version>7.0.5</denodo-jdbc.version>
+        <denodo-hibernate-dialect.version>7.0.20190403</denodo-hibernate-dialect.version>
+        <lms-email-service.version>5.0.0-SNAPSHOT</lms-email-service.version>
+        <lms-canvas-common-configuration.version>5.0.2-SNAPSHOT</lms-canvas-common-configuration.version>
+    </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>edu.iu.uits.lms</groupId>
-                <artifactId>common-configuration</artifactId>
-                <version>4.0.17</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>edu.iu.uits.lms</groupId>
+            <artifactId>lms-email-service</artifactId>
+            <version>${lms-email-service.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>edu.iu.uits.lms</groupId>
+            <artifactId>lms-canvas-common-configuration</artifactId>
+            <version>${lms-canvas-common-configuration.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.denodo.vdp.jdbc</groupId>
+            <artifactId>denodo-jdbc</artifactId>
+            <version>${denodo-jdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.denodo.vdp.jdbc</groupId>
+            <artifactId>denodo-hibernate-dialect</artifactId>
+            <version>${denodo-hibernate-dialect.version}</version>
+        </dependency>
+    </dependencies>
 
-
+    <repositories>
+        <repository>
+            <id>IUMaven</id>
+            <name>IUMaven</name>
+            <url>https://uisapp2.iu.edu/nxs-prd/content/groups/public</url>
+        </repository>
+    </repositories>
 </project>
