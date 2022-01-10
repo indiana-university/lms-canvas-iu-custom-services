@@ -28,5 +28,33 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>${jgitflow.version}</version>
+                <dependencies>
+                    <!-- https://ecosystem.atlassian.net/browse/MJF-299 -->
+                    <!-- 2018-10-16: Must have been a recent change to github.iu.edu that removed support for a security algorithm -->
+                    <!-- Adding in an updated dependency to help -->
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.55</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <!-- see goals wiki page for configuration options -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <noReleaseMerge>true</noReleaseMerge>
+                    <flowInitContext>
+                        <developBranchName>feature/4.x</developBranchName>
+                    </flowInitContext>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>
