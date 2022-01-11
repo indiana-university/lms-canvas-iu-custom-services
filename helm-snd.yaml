@@ -1,0 +1,22 @@
+
+projectedSecret:
+  - secret:
+      name: "properties-2021-06-07"
+
+image:
+  tag: latest
+
+env:
+  APP_ENV: snd
+
+ingress:
+  enabled: true
+  hosts:
+    - host: "lms-iuonly-service-snd.apps-test.iu.edu"
+      paths: []
+
+activeProfiles: "snd"
+
+serviceAccountName: lms-iuonly-impl-snd
+
+cluster: es-test

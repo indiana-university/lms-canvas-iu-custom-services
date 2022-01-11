@@ -1,0 +1,22 @@
+
+projectedSecret:
+  - secret:
+      name: "properties-2021-06-07"
+
+image:
+  tag: latest
+
+env:
+  APP_ENV: stg
+
+ingress:
+  enabled: true
+  hosts:
+    - host: "lms-iuonly-service-stg.apps-test.iu.edu"
+      paths: []
+
+activeProfiles: "stg"
+
+serviceAccountName: lms-iuonly-impl-stg
+
+cluster: es-test
