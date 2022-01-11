@@ -49,7 +49,8 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <noReleaseMerge>true</noReleaseMerge>
                     <flowInitContext>
-                        <developBranchName>feature/4.x</developBranchName>
+                        <developBranchName>4.x-develop</developBranchName>
+                        <masterBranchName>4.x-master</masterBranchName>
                     </flowInitContext>
                 </configuration>
             </plugin>
