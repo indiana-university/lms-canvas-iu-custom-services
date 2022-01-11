@@ -11,7 +11,7 @@
     <artifactId>lms-iuonly-parent</artifactId>
     <name>iuonly-services</name>
     <packaging>pom</packaging>
-    <version>4.0.22-SNAPSHOT</version>
+    <version>4.0.22</version>
 
     <modules>
         <module>lms-iuonly-impl</module>
@@ -47,7 +47,6 @@
                 <configuration>
                     <!-- see goals wiki page for configuration options -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <noReleaseMerge>true</noReleaseMerge>
                     <flowInitContext>
                         <developBranchName>4.x-develop</developBranchName>
                         <masterBranchName>4.x-master</masterBranchName>
