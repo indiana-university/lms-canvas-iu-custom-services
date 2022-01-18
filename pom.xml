@@ -12,7 +12,7 @@
     <artifactId>lms-iuonly-impl</artifactId>
     <name>iuonly-services</name>
     <packaging>jar</packaging>
-    <version>5.0.1-SNAPSHOT</version>
+    <version>5.0.0</version>
 
     <properties>
         <denodo-jdbc.version>8.0.2</denodo-jdbc.version>
