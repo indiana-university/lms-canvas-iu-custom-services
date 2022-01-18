@@ -15,11 +15,14 @@
     <version>5.0.0-SNAPSHOT</version>
 
     <properties>
-        <!-- The denodo-jdbc driver version 7.0.5 maps to the platform version 7.0 20190903 -->
-        <denodo-jdbc.version>7.0.5</denodo-jdbc.version>
-        <denodo-hibernate-dialect.version>7.0.20190403</denodo-hibernate-dialect.version>
-        <lms-email-service.version>5.0.0-SNAPSHOT</lms-email-service.version>
-        <lms-canvas-common-configuration.version>5.0.2-SNAPSHOT</lms-canvas-common-configuration.version>
+        <denodo-jdbc.version>8.0.2</denodo-jdbc.version>
+        <denodo-hibernate-dialect.version>8.0.20201021</denodo-hibernate-dialect.version>
+        <lms-email-service.version>5.0.0</lms-email-service.version>
+        <lms-canvas-common-configuration.version>5.0.2</lms-canvas-common-configuration.version>
+
+        <!-- plugins -->
+        <gitflow-plugin.version>1.15.1</gitflow-plugin.version>
+        <jgitflow.version>1.0-m5.1</jgitflow.version>
     </properties>
 
     <dependencies>
@@ -107,4 +110,45 @@
             <url>https://uisapp2.iu.edu/nxs-prd/content/groups/public</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <name>IU Maven Repository</name>
+            <id>IUMaven</id>
+            <url>https://uisapp2.iu.edu/nxs-prd/content/repositories/IUInternal</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>${jgitflow.version}</version>
+                <dependencies>
+                    <!-- https://ecosystem.atlassian.net/browse/MJF-299 -->
+                    <!-- 2018-10-16: Must have been a recent change to github.iu.edu that removed support for a security algorithm -->
+                    <!-- Adding in an updated dependency to help -->
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.55</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <!-- see goals wiki page for configuration options -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>${gitflow-plugin.version}</version>
+                <configuration>
+                    <!-- see goals wiki page for configuration options -->
+                    <commitDevelopmentVersionAtStart>true</commitDevelopmentVersionAtStart>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
