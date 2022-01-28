@@ -12,7 +12,7 @@
     <artifactId>lms-iuonly-impl</artifactId>
     <name>iuonly-services</name>
     <packaging>jar</packaging>
-    <version>5.0.0</version>
+    <version>5.0.1</version>
 
     <properties>
         <denodo-jdbc.version>8.0.2</denodo-jdbc.version>
@@ -148,6 +148,18 @@
                     <!-- see goals wiki page for configuration options -->
                     <commitDevelopmentVersionAtStart>true</commitDevelopmentVersionAtStart>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
