@@ -49,6 +49,15 @@ public class DeptProvisioningUser implements Serializable {
    @CollectionTable(name = "DEPT_PROV_USER_GROUP", joinColumns = @JoinColumn(name = "DEPT_PROV_USERS_ID"))
    private List<String> groupCode;
 
+   @Column(name = "ALLOW_SIS")
+   private boolean allowSis;
+
+   @Column(name = "AUTHORIZED_ACCOUNTS")
+   private String authorizedAccounts;
+
+   @Column(name = "OVERRIDE_RESTRICTIONS")
+   private boolean overrideRestrictions;
+
    @Column(name = "CREATEDON")
    private Date createdOn;
 
