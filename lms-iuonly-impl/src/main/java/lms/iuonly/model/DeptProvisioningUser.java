@@ -1,7 +1,5 @@
 package lms.iuonly.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import edu.iu.uits.lms.common.date.DateFormatUtil;
 import lombok.Data;
 
 import javax.persistence.CollectionTable;
@@ -49,8 +47,8 @@ public class DeptProvisioningUser implements Serializable {
    @CollectionTable(name = "DEPT_PROV_USER_GROUP", joinColumns = @JoinColumn(name = "DEPT_PROV_USERS_ID"))
    private List<String> groupCode;
 
-   @Column(name = "ALLOW_SIS")
-   private boolean allowSis;
+   @Column(name = "ALLOW_SIS_ENROLLMENTS")
+   private boolean allowSisEnrollments;
 
    @Column(name = "AUTHORIZED_ACCOUNTS")
    private String authorizedAccounts;
