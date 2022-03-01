@@ -1,6 +1,7 @@
 package lms.iuonly.services;
 
 import lms.iuonly.model.DeptProvisioningUser;
+import lms.iuonly.model.DeptProvisioningUserBooleanOverride;
 import lms.iuonly.repository.DeptProvisioningUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class DeptAuthUserController {
 
    @PutMapping("/{id}")
    @PreAuthorize("#oauth2.hasScope('" + WRITE_SCOPE + "')")
-   public DeptProvisioningUser update(@PathVariable Long id, @RequestBody DeptProvisioningUser user) {
+   public DeptProvisioningUser update(@PathVariable Long id, @RequestBody DeptProvisioningUserBooleanOverride user) {
       DeptProvisioningUser updatingUser = deptProvisioningUserRepository.findById(id).orElse(null);
 
       if (user.getGroupCode() != null) {
@@ -68,6 +69,15 @@ public class DeptAuthUserController {
       if (user.getDisplayName() != null) {
          updatingUser.setDisplayName(user.getDisplayName());
       }
+      if (user.getAllowSisEnrollments() != null) {
+         updatingUser.setAllowSisEnrollments(user.getAllowSisEnrollments());
+      }
+      if (user.getAuthorizedAccounts() != null) {
+         updatingUser.setAuthorizedAccounts(user.getAuthorizedAccounts());
+      }
+      if (user.getOverrideRestrictions() != null) {
+         updatingUser.setOverrideRestrictions(user.getOverrideRestrictions());
+      }
       return deptProvisioningUserRepository.save(updatingUser);
    }
 
@@ -79,6 +89,9 @@ public class DeptAuthUserController {
       newUser.setUsername(user.getUsername());
       newUser.setDisplayName(user.getDisplayName());
       newUser.setCanvasUserId(user.getCanvasUserId());
+      newUser.setAllowSisEnrollments(user.isAllowSisEnrollments());
+      newUser.setAuthorizedAccounts(user.getAuthorizedAccounts());
+      newUser.setOverrideRestrictions(user.isOverrideRestrictions());
       return deptProvisioningUserRepository.save(newUser);
    }
 
