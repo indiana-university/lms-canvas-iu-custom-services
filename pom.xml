@@ -70,6 +70,7 @@
         <denodo-hibernate-dialect.version>8.0.20201021</denodo-hibernate-dialect.version>
         <lms-email-service.version>5.0.1-SNAPSHOT</lms-email-service.version>
         <lms-canvas-common-configuration.version>5.0.3</lms-canvas-common-configuration.version>
+        <springdoc-openapi-ui.version>1.6.7</springdoc-openapi-ui.version>
 
         <!-- plugins -->
         <plugins.compiler.version>3.10.0</plugins.compiler.version>
@@ -146,6 +147,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
