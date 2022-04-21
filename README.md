@@ -33,24 +33,42 @@ private SudsServiceImpl sudsService;
 If choosing to use properties files for the configuration values, the default location is `/usr/src/app/config`, but 
 that can be overridden by setting the `app.fullFilePath` value via system property or environment variable.
 
-### Service Configuration
-The following properties need to be set to configure the communication with a database, Denodo, and/or Derdack.
+### Database Configuration
+The following properties need to be set to configure the communication with a database.
 They can be set in a security.properties file, or overridden as environment variables.
 
-| Property                 | Default Value                             | Description                                                                   |
-|--------------------------|-------------------------------------------|-------------------------------------------------------------------------------|
-| `lms.db.user`            |                                           | Username used to access the database                                          |
-| `lms.db.url`             |                                           | JDBC URL of the database.  Will have the form `jdbc:<host>:<port>/<database>` | 
-| `lms.db.driverClass`     |                                           | JDBC Driver class name                                                        |
-| `lms.db.password`        |                                           | Password for the user accessing the database                                  |
-| `denodo.db.driverClass`  |                                           | Driver class for denodo database connections                                  |
-| `denodo.db.url`          |                                           | JDBC URL for connecting to denodo                                             |
-| `denodo.db.user`         |                                           | Denodo username                                                               |
-| `denodo.db.password`     |                                           | Denodo password                                                               |
-| `derdack.rest.baseUrl`   |                                           | Base URL for Derdack API                                                      |
-| `derdack.rest.apiKey`    |                                           | Derdack API key                                                               |
-| `derdack.rest.team`      |                                           | Team for Derdack requests                                                     |
-| `derdack.recipientEmail` | iu-uits-es-ess-lms-notify@exchange.iu.edu | Email for Derdack notifications                                               |
+| Property              | Default Value | Description                                                                   |
+|-----------------------|---------------|-------------------------------------------------------------------------------|
+| `lms.db.user`         |               | Username used to access the database                                          |
+| `lms.db.url`          |               | JDBC URL of the database.  Will have the form `jdbc:<host>:<port>/<database>` | 
+| `lms.db.driverClass`  |               | JDBC Driver class name                                                        |
+| `lms.db.password`     |               | Password for the user accessing the database                                  |
+
+### Denodo Configuration (optional)
+The following properties need to be set to configure the communication with Denodo.
+They can be set in a security.properties file, or overridden as environment variables.
+Additionally, you will need to enable it by including the value `denodo` into the `SPRING_PROFILES_ACTIVE` environment 
+variable. Be aware that if the tool requires multiple values, that there could be more than one profile value in there.
+
+| Property                 | Default Value | Description                                       |
+|--------------------------|---------------|---------------------------------------------------|
+| `denodo.db.driverClass`  |               | Driver class for denodo database connections      |
+| `denodo.db.url`          |               | JDBC URL for connecting to denodo                 |
+| `denodo.db.user`         |               | Denodo username                                   |
+| `denodo.db.password`     |               | Denodo password                                   |
+
+### Derdack Configuration (optional)
+The following properties need to be set to configure the communication with Derdack.
+They can be set in a security.properties file, or overridden as environment variables.
+Additionally, you will need to enable it by including the value `derdack` into the `SPRING_PROFILES_ACTIVE` environment
+variable. Be aware that if the tool requires multiple values, that there could be more than one profile value in there.
+
+| Property                 | Default Value                             | Description                          |
+|--------------------------|-------------------------------------------|--------------------------------------|
+| `derdack.rest.baseUrl`   |                                           | Base URL for Derdack API             |
+| `derdack.rest.apiKey`    |                                           | Derdack API key                      |
+| `derdack.rest.team`      |                                           | Team for Derdack requests            |
+| `derdack.recipientEmail` | iu-uits-es-ess-lms-notify@exchange.iu.edu | Email for Derdack notifications      |
 
 ### Exposing the REST endpoints
 If you would like to expose the REST endpoints in a tool, you will need to enable them by including the value 
