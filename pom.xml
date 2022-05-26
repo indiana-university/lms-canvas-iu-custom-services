@@ -66,7 +66,7 @@
     </scm>
 
     <properties>
-        <lms-email-service.version>5.0.1</lms-email-service.version>
+        <lms-email-service.version>5.0.2</lms-email-service.version>
         <lms-canvas-common-configuration.version>5.0.3</lms-canvas-common-configuration.version>
         <springdoc-openapi-ui.version>1.6.7</springdoc-openapi-ui.version>
 
