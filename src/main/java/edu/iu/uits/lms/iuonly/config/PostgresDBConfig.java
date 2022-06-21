@@ -34,12 +34,9 @@ package edu.iu.uits.lms.iuonly.config;
  */
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -62,18 +59,11 @@ import java.util.Map;
 @EnableTransactionManagement
 public class PostgresDBConfig {
 
-    @Bean(name = "postgresdb")
-    @ConfigurationProperties(prefix = "spring.datasource")
-    @Primary
-    public DataSource dataSource() {
-        return DataSourceBuilder.create().build();
-    }
 
     @Bean(name = "postgresdbEntityMgrFactory")
-    @Primary
     public LocalContainerEntityManagerFactoryBean postgresdbEntityMgrFactory(
             final EntityManagerFactoryBuilder builder,
-            @Qualifier("postgresdb") final DataSource dataSource) {
+            final DataSource dataSource) {
         // dynamically setting up the hibernate properties for each of the datasource.
         final Map<String, String> properties = new HashMap<>();
         return builder
@@ -84,7 +74,6 @@ public class PostgresDBConfig {
     }
 
     @Bean(name = "postgresdbTransactionMgr")
-    @Primary
     public PlatformTransactionManager postgresdbTransactionMgr(
             @Qualifier("postgresdbEntityMgrFactory") final EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
