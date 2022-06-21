@@ -46,14 +46,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
-
 @TestConfiguration
 public class IuClientTestConfig {
-
-   @MockBean
-   @Qualifier("postgresdb")
-   public DataSource dataSource;
 
    @MockBean
    @Qualifier("postgresdbEntityMgrFactory")
@@ -62,10 +56,6 @@ public class IuClientTestConfig {
    @MockBean
    @Qualifier("postgresdbTransactionMgr")
    public PlatformTransactionManager ltiTransactionMgr;
-
-   @MockBean
-   @Qualifier("denododb")
-   public DataSource denodoDataSource;
 
    /*
       Mock all the repositories

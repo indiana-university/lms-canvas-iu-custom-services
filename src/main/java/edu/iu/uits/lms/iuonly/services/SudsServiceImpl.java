@@ -40,7 +40,6 @@ import edu.iu.uits.lms.iuonly.model.SudsCourse;
 import edu.iu.uits.lms.iuonly.model.SudsFerpaEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -67,7 +66,6 @@ public class SudsServiceImpl {
     private static final String SUDS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
-    @Qualifier("postgresdb")
     DataSource dataSource;
 
     public SudsCourse getSudsCourseBySiteId(String siteId) {
