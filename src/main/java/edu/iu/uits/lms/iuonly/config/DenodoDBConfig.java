@@ -38,6 +38,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
@@ -48,7 +49,7 @@ public class DenodoDBConfig {
     @Bean(name = "denododb")
     @ConfigurationProperties(prefix = "denodo.datasource")
     public DataSource dataSource() {
-        DataSource ds = DataSourceBuilder.create().build();
+        DataSource ds = DataSourceBuilder.create().type(DriverManagerDataSource.class).build();
         return ds;
     }
 }
