@@ -37,6 +37,7 @@ import edu.iu.uits.lms.iuonly.repository.DeptProvisioningUserRepository;
 import edu.iu.uits.lms.iuonly.repository.ErrorContactEventRepository;
 import edu.iu.uits.lms.iuonly.repository.ErrorContactJobProfileRepository;
 import edu.iu.uits.lms.iuonly.repository.FeatureAccessRepository;
+import edu.iu.uits.lms.iuonly.repository.HierarchyResourceRepository;
 import edu.iu.uits.lms.iuonly.repository.LmsBatchEmailRepository;
 import edu.iu.uits.lms.iuonly.repository.NodeHierarchyRepository;
 import edu.iu.uits.lms.iuonly.repository.TemplatedCourseRepository;
@@ -81,4 +82,7 @@ public class IuClientTestConfig {
 
    @MockBean
    public TemplatedCourseRepository templatedCourseRepository;
+
+   @MockBean
+   public HierarchyResourceRepository hierarchyResourceRepository;
 }
