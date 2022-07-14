@@ -81,10 +81,10 @@ public class DeptProvisioningUser implements Serializable {
    private List<String> groupCode;
 
    @Column(name = "ALLOW_SIS_ENROLLMENTS")
- 	private boolean allowSisEnrollments;
+   private boolean allowSisEnrollments;
 
- 	@Column(name = "AUTHORIZED_ACCOUNTS")
- 	private String authorizedAccounts;
+   @Column(name = "AUTHORIZED_ACCOUNTS")
+   private String authorizedAccounts;
 
    @Column(name = "OVERRIDE_RESTRICTIONS")
    private boolean overrideRestrictions;
