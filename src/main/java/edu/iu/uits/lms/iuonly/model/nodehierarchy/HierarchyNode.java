@@ -35,55 +35,14 @@ package edu.iu.uits.lms.iuonly.model.nodehierarchy;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(name = "NODE_HIERARCHY")
-@SequenceGenerator(name = "NODE_HIERARCHY_ID_SEQ", sequenceName = "NODE_HIERARCHY_ID_SEQ", allocationSize = 1)
 @Data
 @NoArgsConstructor
-@Slf4j
-public class NodeWrapper implements Serializable {
-
-    @Id
-    @GeneratedValue(generator = "NODE_HIERARCHY_ID_SEQ")
-    private Long id;
-
-    @Lob
-    @Column(name = "hierarchy_bytes", columnDefinition = "TEXT")
-    private byte[] hierarchy;
-
-    private Date created;
-    private Date modified;
-
-    public NodeWrapper(List<HierarchyNode> hierarchyNodes) {
-        this.hierarchy = SerializationUtils.serialize((Serializable) hierarchyNodes);
-    }
-
-    public List<HierarchyNode> getNodeHierarchy() {
-        return SerializationUtils.deserialize(this.hierarchy);
-    }
-
-    @PreUpdate
-    @PrePersist
-    public void updateTimeStamps() {
-        modified = new Date();
-        if (created==null) {
-            created = new Date();
-        }
-    }
+public class HierarchyNode implements Serializable {
+    private String id;
+    private String name;
+    private List<HierarchyNode> children;
 }
