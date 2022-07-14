@@ -66,6 +66,7 @@
     </scm>
 
     <properties>
+        <lms-canvas-services.version>5.0.7</lms-canvas-services.version>
         <lms-email-service.version>5.0.2</lms-email-service.version>
         <lms-canvas-common-configuration.version>5.0.3</lms-canvas-common-configuration.version>
         <springdoc-openapi-ui.version>1.6.7</springdoc-openapi-ui.version>
@@ -81,6 +82,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>edu.iu.uits.lms</groupId>
+            <artifactId>lms-canvas-services</artifactId>
+            <version>${lms-canvas-services.version}</version>
+        </dependency>
         <dependency>
             <groupId>edu.iu.uits.lms</groupId>
             <artifactId>lms-email-service</artifactId>

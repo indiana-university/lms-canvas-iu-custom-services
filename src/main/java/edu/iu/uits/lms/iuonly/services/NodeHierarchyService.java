@@ -33,66 +33,72 @@ package edu.iu.uits.lms.iuonly.services;
  * #L%
  */
 
-import edu.iu.uits.lms.iuonly.model.nodehierarchy.NodeCampus;
-import edu.iu.uits.lms.iuonly.model.nodehierarchy.NodeSchool;
-import edu.iu.uits.lms.iuonly.model.nodehierarchy.NodeWrapper;
-import edu.iu.uits.lms.iuonly.repository.NodeHierarchyRepository;
+import edu.iu.uits.lms.canvas.model.Account;
+import edu.iu.uits.lms.canvas.services.CanvasService;
+import edu.iu.uits.lms.iuonly.model.nodehierarchy.HierarchyNode;
 import edu.iu.uits.lms.iuonly.services.rest.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-
-/**
- * Created by tnguyen on 2/5/16.
- */
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class NodeHierarchyService extends BaseService {
-
     @Autowired
-    private NodeHierarchyRepository nodeHierarchyRepository;
+    private CanvasService canvasService;
 
+    /**
+     * Return the hierarchy based off of canvas accounts
+     * @param accounts
+     * @return
+     */
+    public List<HierarchyNode> buildHierarchyForAllAccounts(List<Account> accounts) {
+        Map<String, List<HierarchyNode>> childrenForParentHierarchyMap = new HashMap<>();
+        Map<String, HierarchyNode> hierarchyMap = new HashMap<>();
 
-    //TODO keep an eye on this one after SISImportServiceImpl conversion
-    // likely don't need the Transactional on this method
-//    @Transactional
-    public String writeHierarchy(List<NodeCampus> nodeHierarchys) {
-        nodeHierarchyRepository.deleteAll();
-        NodeWrapper nodeWrapper = new NodeWrapper();
-        nodeWrapper.setCampusList(nodeHierarchys);
-        nodeHierarchyRepository.save(nodeWrapper);
+        final String rootAccountId = "root";
 
-        return "Hierarchy created";
-    }
+        Account rootAccount = new Account();
+        rootAccount.setId(canvasService.getRootAccount());
+        rootAccount.setName("Indiana University");
+        rootAccount.setParentAccountId(rootAccountId);
 
-    public List<NodeCampus> readHierarchy() {
-        List<NodeCampus> nodeHierarchys = null;
-        NodeWrapper nodeWrapper = nodeHierarchyRepository.findTop1ByOrderByModifiedDesc();
+        accounts.add(rootAccount);
 
-        if (nodeWrapper != null) {
-            nodeHierarchys = nodeWrapper.getCampusList();
-        }
+        for (Account account : accounts) {
+            HierarchyNode hierarchyNode = new HierarchyNode();
+            hierarchyNode.setId(account.getId());
+            hierarchyNode.setName(account.getName());
 
-        return nodeHierarchys;
-    }
+            String parentId = account.getParentAccountId();
 
-    public List<String> getFlattenedHierarchy() {
-        List<String> flattened = new ArrayList<>();
-        List<NodeCampus> hierarchy = readHierarchy();
-        for (NodeCampus campus : hierarchy) {
-            flattened.add(campus.getCampus());
-            for (NodeSchool school : campus.getSchools()) {
-                flattened.add(school.getSchool());
-                if (school.getDepartments() != null) {
-                    flattened.addAll(school.getDepartments());
-                }
+            if (! childrenForParentHierarchyMap.containsKey(parentId)) {
+                childrenForParentHierarchyMap.put(parentId, new ArrayList<>());
             }
+
+            hierarchyMap.put(account.getId(), hierarchyNode);
+            childrenForParentHierarchyMap.get(parentId).add(hierarchyNode);
         }
 
-        return flattened;
+        for (HierarchyNode hierarchyNode : hierarchyMap.values()) {
+            String id = hierarchyNode.getId();
+            List<HierarchyNode> childrenList = childrenForParentHierarchyMap.get(id) == null ? new ArrayList<>() : childrenForParentHierarchyMap.get(id);
+
+            childrenList = childrenList.stream()
+                    .sorted(Comparator.comparing(HierarchyNode::getName))
+                    .collect(Collectors.toList());
+
+            hierarchyNode.setChildren(childrenList);
+        }
+
+        // return root node list
+        return childrenForParentHierarchyMap.get(rootAccountId);
     }
 }
