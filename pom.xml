@@ -66,9 +66,11 @@
     </scm>
 
     <properties>
-        <lms-canvas-services.version>5.0.7</lms-canvas-services.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
         <lms-email-service.version>5.0.2</lms-email-service.version>
         <lms-canvas-common-configuration.version>5.0.3</lms-canvas-common-configuration.version>
+        <lms-canvas-services.version>5.0.8</lms-canvas-services.version>
+        <lms-email-service.version>5.0.2</lms-email-service.version>
         <springdoc-openapi-ui.version>1.6.7</springdoc-openapi-ui.version>
 
         <!-- plugins -->
@@ -86,11 +88,13 @@
             <groupId>edu.iu.uits.lms</groupId>
             <artifactId>lms-canvas-services</artifactId>
             <version>${lms-canvas-services.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>edu.iu.uits.lms</groupId>
             <artifactId>lms-email-service</artifactId>
             <version>${lms-email-service.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -133,7 +137,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
+            <version>${commons-collections4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
