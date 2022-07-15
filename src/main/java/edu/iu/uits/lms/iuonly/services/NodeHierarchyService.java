@@ -36,6 +36,8 @@ package edu.iu.uits.lms.iuonly.services;
 import edu.iu.uits.lms.canvas.model.Account;
 import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.iuonly.model.nodehierarchy.HierarchyNode;
+import edu.iu.uits.lms.iuonly.model.nodehierarchy.NodeWrapper;
+import edu.iu.uits.lms.iuonly.repository.NodeHierarchyRepository;
 import edu.iu.uits.lms.iuonly.services.rest.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class NodeHierarchyService extends BaseService {
+    @Autowired
+    private NodeHierarchyRepository nodeHierarchyRepository;
+
     @Autowired
     private CanvasService canvasService;
 
@@ -101,4 +106,39 @@ public class NodeHierarchyService extends BaseService {
         // return root node list
         return childrenForParentHierarchyMap.get(rootAccountId);
     }
+
+    public String writeHierarchy(List<HierarchyNode> hierarchyNodes) {
+        nodeHierarchyRepository.deleteAll();
+        NodeWrapper nodeWrapper = new NodeWrapper(hierarchyNodes);
+        nodeHierarchyRepository.save(nodeWrapper);
+
+        return "Hierarchy created";
+    }
+
+    public List<HierarchyNode> readHierarchy() {
+        NodeWrapper nodeWrapper = nodeHierarchyRepository.findTop1ByOrderByModifiedDesc();
+
+        return nodeWrapper.getNodeHierarchy();
+    }
+
+    public List<String> getFlattenedHierarchy() {
+        List<String> flattened = new ArrayList<>();
+        List<HierarchyNode> hierarchy = readHierarchy();
+
+        flattened.addAll(recursiveFlatten(hierarchy));
+
+        return flattened;
+    }
+
+    private List<String> recursiveFlatten(List<HierarchyNode> hierarchyNodes) {
+        List<String> flattened = new ArrayList<>();
+
+        for (HierarchyNode hierarchyNode : hierarchyNodes) {
+            flattened.add(hierarchyNode.getName());
+            flattened.addAll(recursiveFlatten(hierarchyNode.getChildren()));
+        }
+
+        return flattened;
+    }
+
 }
