@@ -52,6 +52,7 @@ public class IuCustomRestConfiguration {
             http.requestMatchers().antMatchers("/rest/iu/**")
                     .and()
                     .authorizeRequests()
+                    .antMatchers("/rest/iu/file/**").permitAll()
                     .antMatchers("/rest/iu/**")
                     .access("hasAuthority('SCOPE_iusvcs:read') or hasAuthority('SCOPE_iusvcs:write')")
                     .and()

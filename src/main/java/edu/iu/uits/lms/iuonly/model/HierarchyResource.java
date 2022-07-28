@@ -52,6 +52,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -59,7 +60,7 @@ import java.util.Date;
 @SequenceGenerator(name = "LMS_HIERARCHY_RESOURCE_ID_SEQ", sequenceName = "LMS_HIERARCHY_RESOURCE_ID_SEQ", allocationSize = 1)
 @Data
 @NoArgsConstructor
-public class HierarchyResource {
+public class HierarchyResource implements Serializable {
 
     @Id
     @GeneratedValue(generator = "LMS_HIERARCHY_RESOURCE_ID_SEQ")

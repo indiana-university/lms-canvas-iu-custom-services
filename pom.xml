@@ -88,7 +88,7 @@
             <groupId>edu.iu.uits.lms</groupId>
             <artifactId>lms-canvas-services</artifactId>
             <version>${lms-canvas-services.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>edu.iu.uits.lms</groupId>

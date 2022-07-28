@@ -41,6 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public interface NodeHierarchyRepository extends PagingAndSortingRepository<NodeWrapper, Long> {
 
-    @Transactional
+    @Transactional(transactionManager = "postgresdbTransactionMgr")
     NodeWrapper findTop1ByOrderByModifiedDesc();
 }

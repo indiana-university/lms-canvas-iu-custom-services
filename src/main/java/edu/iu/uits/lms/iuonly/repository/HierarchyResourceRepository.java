@@ -50,7 +50,7 @@ public interface HierarchyResourceRepository extends PagingAndSortingRepository<
     List<HierarchyResource> findByNodeAndDefaultTemplateTrue(String nodeName);
 
     @Modifying
-    @Transactional
+    @Transactional(transactionManager = "postgresdbTransactionMgr")
     @Query("update HierarchyResource set defaulttemplate = :defaulttemplate where id = :templateId")
     int changeTemplateDefaultStatus(@Param("templateId") Long templateId, @Param("defaulttemplate") boolean defaulttemplate);
 }

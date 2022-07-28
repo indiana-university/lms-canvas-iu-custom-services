@@ -49,6 +49,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -56,7 +57,7 @@ import java.util.Date;
 @SequenceGenerator(name = "LMS_FILE_STORAGE_ID_SEQ", sequenceName = "LMS_FILE_STORAGE_ID_SEQ", allocationSize = 1)
 @Data
 @NoArgsConstructor
-public class StoredFile {
+public class StoredFile implements Serializable {
 
    @Id
    @GeneratedValue(generator = "LMS_FILE_STORAGE_ID_SEQ")
