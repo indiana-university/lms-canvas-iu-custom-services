@@ -56,7 +56,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest/iu/errorcontact")
 @Slf4j
-public class ErrorContactDbRestService extends BaseService {
+public class ErrorContactDbRestService {
     @Autowired
     private ErrorContactEventRepository errorContactEventRepository;
 

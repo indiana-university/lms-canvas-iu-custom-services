@@ -51,10 +51,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.READ;
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.WRITE;
+
 @RestController
 @RequestMapping("/rest/iu/featureaccess")
 @Slf4j
-public class FeatureAccessController extends BaseService {
+public class FeatureAccessController {
     @Autowired
     private FeatureAccessRepository featureAccessRepository = null;
 
@@ -62,25 +65,25 @@ public class FeatureAccessController extends BaseService {
     private FeatureAccessServiceImpl featureAccessService = null;
 
     @GetMapping("/{id}")
-    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
     public FeatureAccess getFeatureAccessById(@PathVariable("id") Long id) {
         return featureAccessRepository.findById(id).orElse(null);
     }
 
     @GetMapping("/featureid/{featureId}")
-    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
     public List<FeatureAccess> getAccessRecsForFeature(@PathVariable("featureId") String featureId) {
         return featureAccessRepository.findByFeatureId(featureId);
     }
 
     @GetMapping("/all")
-    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
     public List<FeatureAccess> getAllFeatureAccessRecs() {
         return (List<FeatureAccess>) featureAccessRepository.findAll();
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("#oauth2.hasScope('" + WRITE_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
     public FeatureAccess updateFeatureAccess(@PathVariable Long id, @RequestBody FeatureAccess featureAccess) {
         FeatureAccess updatedFeatureAccess = featureAccessRepository.findById(id).orElse(null);
 
@@ -100,7 +103,7 @@ public class FeatureAccessController extends BaseService {
     }
 
     @PostMapping
-    @PreAuthorize("#oauth2.hasScope('" + WRITE_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
     public FeatureAccess createFeatureAccess(@RequestBody FeatureAccess featureAccess) {
         FeatureAccess newAccess = new FeatureAccess();
         newAccess.setFeatureId(featureAccess.getFeatureId());
@@ -110,14 +113,14 @@ public class FeatureAccessController extends BaseService {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("#oauth2.hasScope('" + WRITE_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
     public String deleteFeatureAccess(@PathVariable("id") Long id) {
         featureAccessRepository.deleteById(id);
         return "Delete success.";
     }
 
     @DeleteMapping("/featureId/{featureId}")
-    @PreAuthorize("#oauth2.hasScope('" + WRITE_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
     public String deleteAllAccessForFeature(@PathVariable String featureId) {
         List<FeatureAccess> allAccessForFeature = featureAccessRepository.findByFeatureId(featureId);
         if (allAccessForFeature != null) {
@@ -133,7 +136,7 @@ public class FeatureAccessController extends BaseService {
     }
 
     @GetMapping("/{accountid}/{featureid}")
-    @PreAuthorize("#oauth2.hasScope('" + READ_SCOPE + "')")
+    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
     public boolean isFeatureEnabledForAccount(@PathVariable("featureid") String featureId, @PathVariable("accountid") String accountId,
                                               @RequestParam(value = "parentAccountIds", required = false) List<String> parentAccountIds) {
         return featureAccessService.isFeatureEnabledForAccount(featureId, accountId, parentAccountIds);

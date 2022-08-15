@@ -42,8 +42,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOMREST_PROFILE;
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.READ_SCOPE;
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.WRITE_SCOPE;
+
 public class IuCustomRestConfiguration {
-    @Profile("iucustomrest")
+    @Profile(IUCUSTOMREST_PROFILE)
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 4996)
     public static class IuRestWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
@@ -54,7 +58,7 @@ public class IuCustomRestConfiguration {
                     .authorizeRequests()
                     .antMatchers("/rest/iu/file/**").permitAll()
                     .antMatchers("/rest/iu/**")
-                    .access("hasAuthority('SCOPE_iusvcs:read') or hasAuthority('SCOPE_iusvcs:write')")
+                    .access("hasAuthority('" + READ_SCOPE + "') or hasAuthority('" + WRITE_SCOPE + "')")
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
@@ -63,7 +67,7 @@ public class IuCustomRestConfiguration {
         }
     }
 
-    @Profile("iucustomrest & swagger")
+    @Profile(IUCUSTOMREST_PROFILE + " & swagger")
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 4995)
     public static class IuApiWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
