@@ -38,7 +38,6 @@ import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.iuonly.model.nodehierarchy.HierarchyNode;
 import edu.iu.uits.lms.iuonly.model.nodehierarchy.NodeWrapper;
 import edu.iu.uits.lms.iuonly.repository.NodeHierarchyRepository;
-import edu.iu.uits.lms.iuonly.services.rest.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +51,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class NodeHierarchyService extends BaseService {
+public class NodeHierarchyService {
     @Autowired
     private NodeHierarchyRepository nodeHierarchyRepository;
 

@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.iuonly.services.rest;
+package edu.iu.uits.lms.iuonly;
 
 /*-
  * #%L
@@ -33,8 +33,29 @@ package edu.iu.uits.lms.iuonly.services.rest;
  * #L%
  */
 
-public class BaseService {
+public class IuCustomConstants {
 
-   protected final static String READ_SCOPE = "iusvcs:read";
-   protected final static String WRITE_SCOPE = "iusvcs:write";
+   public final static String READ = "iusvcs:read";
+   public final static String WRITE = "iusvcs:write";
+
+   public final static String READ_SCOPE = "SCOPE_" + READ;
+   public final static String WRITE_SCOPE = "SCOPE_" + WRITE;
+
+   /**
+    * Constant used for the profile to enable the iu-custom related REST operations
+    */
+   public final static String IUCUSTOMREST_PROFILE = "iucustomrest";
+
+   /**
+    * Group code wrapping up the iu-custom related REST operations in the generated API specs
+    */
+   public final static String IUCUSTOM_GROUP_CODE = "iu-custom";
+
+   /**
+    * Group code path wrapping up the iu-custom related REST operations in the generated API specs
+    */
+   public final static String IUCUSTOM_GROUP_CODE_PATH = "/" + IUCUSTOM_GROUP_CODE;
+
+   private IuCustomConstants() {
+   }
 }

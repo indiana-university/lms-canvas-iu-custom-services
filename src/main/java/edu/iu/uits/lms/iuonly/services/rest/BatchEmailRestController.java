@@ -54,7 +54,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest/iu/batchemail")
 @Slf4j
-public class BatchEmailRestController extends BaseService {
+public class BatchEmailRestController {
 
     @Autowired
     private LmsBatchEmailRepository lmsBatchEmailRepository;

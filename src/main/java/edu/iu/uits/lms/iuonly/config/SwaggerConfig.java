@@ -43,19 +43,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-@Profile("iucustomrest & swagger")
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOMREST_PROFILE;
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOM_GROUP_CODE;
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.READ;
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.WRITE;
+
+@Profile(IUCUSTOMREST_PROFILE + " & swagger")
 @Configuration("IuCustomSwaggerConfig")
 @SecurityScheme(name = "security_auth_iu", type = SecuritySchemeType.OAUTH2,
       flows = @OAuthFlows(authorizationCode = @OAuthFlow(
             authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
-            scopes = {@OAuthScope(name = "iusvcs:read"), @OAuthScope(name = "iusvcs:write")},
+            scopes = {@OAuthScope(name = READ), @OAuthScope(name = WRITE)},
             tokenUrl = "${springdoc.oAuthFlow.tokenUrl}")))
 public class SwaggerConfig {
 
    @Bean
    public GroupedOpenApi iuCustomOpenApi() {
       return GroupedOpenApi.builder()
-            .group("iu-custom")
+            .group(IUCUSTOM_GROUP_CODE)
             .packagesToScan("edu.iu.uits.lms.iuonly")
             .pathsToMatch("/rest/iu/**")
             .build();
