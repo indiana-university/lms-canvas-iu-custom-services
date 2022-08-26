@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.iuonly.repository;
+package edu.iu.uits.lms.iuonly.model;
 
 /*-
  * #%L
@@ -33,26 +33,12 @@ package edu.iu.uits.lms.iuonly.repository;
  * #L%
  */
 
-import edu.iu.uits.lms.iuonly.model.HierarchyResource;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.Data;
 
-import java.util.List;
+import java.io.Serializable;
 
-@Component
-public interface HierarchyResourceRepository extends PagingAndSortingRepository<HierarchyResource, Long> {
-
-    List<HierarchyResource> findByNode(String nodeName);
-    List<HierarchyResource> findByNodeAndDefaultTemplateTrue(String nodeName);
-
-    List<HierarchyResource> findByHomepageTemplate();
-
-    @Modifying
-    @Transactional(transactionManager = "postgresdbTransactionMgr")
-    @Query("update HierarchyResource set defaulttemplate = :defaulttemplate where id = :templateId")
-    int changeTemplateDefaultStatus(@Param("templateId") Long templateId, @Param("defaulttemplate") boolean defaulttemplate);
+@Data
+public class ToggledHomepageTemplates implements Serializable {
+   private HierarchyResource oldHomepageTemplate;
+   private HierarchyResource newHomepageTemplate;
 }
