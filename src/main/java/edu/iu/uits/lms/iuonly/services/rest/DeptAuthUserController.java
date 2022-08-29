@@ -36,6 +36,8 @@ package edu.iu.uits.lms.iuonly.services.rest;
 import edu.iu.uits.lms.iuonly.model.DeptProvisioningUser;
 import edu.iu.uits.lms.iuonly.model.DeptProvisioningUserBooleanOverride;
 import edu.iu.uits.lms.iuonly.repository.DeptProvisioningUserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,6 +57,7 @@ import static edu.iu.uits.lms.iuonly.IuCustomConstants.WRITE;
 
 @RestController
 @RequestMapping("/rest/iu/dept_auth_user")
+@Tag(name = "DeptAuthUserController", description = "Operations involving the DeptProvisioningUser table")
 @Slf4j
 public class DeptAuthUserController {
 
@@ -63,30 +66,35 @@ public class DeptAuthUserController {
 
    @GetMapping("/{id}")
    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+   @Operation(summary = "Get DeptProvisioningUser by id")
    public DeptProvisioningUser getFromId(@PathVariable Long id) {
       return deptProvisioningUserRepository.findById(id).orElse(null);
    }
 
    @GetMapping("/username/{username}")
    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+   @Operation(summary = "Get DeptProvisioningUser by username")
    public DeptProvisioningUser getByUsername(@PathVariable String username) {
       return deptProvisioningUserRepository.findByUsername(username);
    }
 
    @GetMapping("/canvasId/{canvasId}")
    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+   @Operation(summary = "Get DeptProvisioningUser by canvas user id")
    public DeptProvisioningUser getByCanvasUserId(@PathVariable String canvasId) {
       return deptProvisioningUserRepository.findByCanvasUserId(canvasId);
    }
 
    @GetMapping("/all")
    @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+   @Operation(summary = "Get all DeptProvisioningUsers")
    public List<DeptProvisioningUser> getAll() {
       return (List<DeptProvisioningUser>) deptProvisioningUserRepository.findAll();
    }
 
    @PutMapping("/{id}")
    @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
+   @Operation(summary = "Update an existing DeptProvisioningUser by id")
    public DeptProvisioningUser update(@PathVariable Long id, @RequestBody DeptProvisioningUserBooleanOverride user) {
       DeptProvisioningUser updatingUser = deptProvisioningUserRepository.findById(id).orElse(null);
 
@@ -116,6 +124,7 @@ public class DeptAuthUserController {
 
    @PostMapping("/")
    @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
+   @Operation(summary = "Create a new DeptProvisioningUser")
    public DeptProvisioningUser create(@RequestBody DeptProvisioningUser user) {
       DeptProvisioningUser newUser = new DeptProvisioningUser();
       newUser.setGroupCode(user.getGroupCode());
@@ -130,6 +139,7 @@ public class DeptAuthUserController {
 
    @DeleteMapping("/{id}")
    @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
+   @Operation(summary = "Delete a DeptProvisioningUser by id")
    public String delete(@PathVariable Long id) {
       deptProvisioningUserRepository.deleteById(id);
       return "Delete success.";

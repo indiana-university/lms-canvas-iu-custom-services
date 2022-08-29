@@ -37,6 +37,8 @@ import edu.iu.uits.lms.iuonly.model.errorcontact.ErrorContactEvent;
 import edu.iu.uits.lms.iuonly.model.errorcontact.ErrorContactJobProfile;
 import edu.iu.uits.lms.iuonly.repository.ErrorContactEventRepository;
 import edu.iu.uits.lms.iuonly.repository.ErrorContactJobProfileRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest/iu/errorcontact")
+@Tag(name = "ErrorContactDbRestService", description = "Operations involving the ErrorContactEvent and ErrorContactJobProfile tables")
 @Slf4j
 public class ErrorContactDbRestService {
     @Autowired
@@ -64,16 +67,19 @@ public class ErrorContactDbRestService {
     private ErrorContactJobProfileRepository errorContactJobProfileRepository;
 
     @GetMapping("/events/all")
+    @Operation(summary = "Get all ErrorContactEvents")
     public List<ErrorContactEvent> getAllEvents() {
         return IterableUtils.toList(errorContactEventRepository.findAll());
     }
 
     @GetMapping("/jobprofiles/all")
+    @Operation(summary = "Get all ErrorContactJobProfiles")
     public List<ErrorContactJobProfile> getAllJobProfiles() {
         return IterableUtils.toList(errorContactJobProfileRepository.findAll());
     }
 
     @GetMapping("/jobprofiles/{jobcode}")
+    @Operation(summary = "Get an ErrorContactJobProfile for a given jobcode")
     public ErrorContactJobProfile getJobProfileByJobCode(@PathVariable("jobcode") String jobcode) {
         if (jobcode == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing job information");
@@ -89,6 +95,7 @@ public class ErrorContactDbRestService {
     }
 
     @PostMapping("/jobprofiles")
+    @Operation(summary = "Create a new ErrorContactJobProfile")
     public ErrorContactJobProfile createJobProfile(@RequestBody ErrorContactJobProfile errorContactJobProfile) {
         if (errorContactJobProfile == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing job information");
@@ -98,6 +105,7 @@ public class ErrorContactDbRestService {
     }
 
     @PutMapping("/jobprofiles")
+    @Operation(summary = "Update an existing ErrorContactJobProfile,  based on its jobcode")
     public ErrorContactJobProfile updateJobProfile(@RequestBody ErrorContactJobProfile updatedErrorContactJobProfile) {
         if (updatedErrorContactJobProfile == null || updatedErrorContactJobProfile.getJobCode() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing job information");
@@ -118,6 +126,7 @@ public class ErrorContactDbRestService {
     }
 
     @DeleteMapping("/jobprofiles/{jobcode}")
+    @Operation(summary = "Delete an ErrorContactJobProfile,  based on its jobcode")
     public boolean deleteJobProfile(@PathVariable("jobcode") String jobcode) {
         if (jobcode == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing jobcode");
@@ -135,6 +144,7 @@ public class ErrorContactDbRestService {
     }
 
     @PutMapping("/jobprofiles/activatebyjobcode/{jobcode}")
+    @Operation(summary = "Activate an existing ErrorContactJobProfile,  based on its jobcode")
     public ErrorContactJobProfile activateByJobCode(@PathVariable("jobcode") String jobcode) {
         if (jobcode == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing jobcode");
@@ -152,6 +162,7 @@ public class ErrorContactDbRestService {
     }
 
     @PutMapping("/jobprofiles/deactivatebyjobcode/{jobcode}")
+    @Operation(summary = "Deactivate an existing ErrorContactJobProfile,  based on its jobcode")
     public ErrorContactJobProfile deactivateByJobCode(@PathVariable("jobcode") String jobcode) {
         if (jobcode == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing jobcode");
@@ -169,11 +180,13 @@ public class ErrorContactDbRestService {
     }
 
     @PutMapping("/jobprofiles/activate/all")
+    @Operation(summary = "Activate all existing ErrorContactJobProfiles")
     public void activateAllJobs() {
         errorContactJobProfileRepository.activateAllJobProfiles();
     }
 
     @PutMapping("/jobprofiles/deactivate/all")
+    @Operation(summary = "Deactivate all existing ErrorContactJobProfiles")
     public void deactivateAllJobs() {
         errorContactJobProfileRepository.deactivateAllJobProfiles();
     }

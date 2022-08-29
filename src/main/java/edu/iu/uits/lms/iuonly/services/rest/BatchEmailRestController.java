@@ -35,6 +35,8 @@ package edu.iu.uits.lms.iuonly.services.rest;
 
 import edu.iu.uits.lms.iuonly.model.LmsBatchEmail;
 import edu.iu.uits.lms.iuonly.repository.LmsBatchEmailRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,6 +55,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/rest/iu/batchemail")
+@Tag(name = "BatchEmailRestController", description = "Operations involving the LmsBatchEmail table")
 @Slf4j
 public class BatchEmailRestController {
 
@@ -60,22 +63,26 @@ public class BatchEmailRestController {
     private LmsBatchEmailRepository lmsBatchEmailRepository;
 
     @GetMapping(value = "/{id}")
+    @Operation(summary = "Get LmsBatchEmail by id")
     public LmsBatchEmail getBatchEmailFromId(@PathVariable Long id) {
         return lmsBatchEmailRepository.findById(id).orElse(null);
     }
 
     @GetMapping(value = "/groupcode/{groupcode}")
+    @Operation(summary = "Get LmsBatchEmail by groupcode")
     public LmsBatchEmail getBatchEmailFromGroupCode(@PathVariable String groupcode) {
         return lmsBatchEmailRepository.getBatchEmailFromGroupCode(groupcode);
     }
 
     @GetMapping(value = "/all")
+    @Operation(summary = "Get all LmsBatchEmails")
     public List<LmsBatchEmail> getBatchEmailAll() {
         List<LmsBatchEmail> batchEmails = (List<LmsBatchEmail>) lmsBatchEmailRepository.findAll();
         return batchEmails;
     }
 
     @PutMapping(value = "/{id}")
+    @Operation(summary = "Update an existing LmsBatchEmail by id with the provided comma separated string of emails")
     public LmsBatchEmail updateBatchEmail(@PathVariable Long id, @RequestBody String emails) {
         LmsBatchEmail updatedBatchEmail = lmsBatchEmailRepository.findById(id).orElse(null);
         updatedBatchEmail.setEmails(emails);
@@ -83,6 +90,7 @@ public class BatchEmailRestController {
     }
 
     @PostMapping("/")
+    @Operation(summary = "Create a new LmsBatchEmail")
     public LmsBatchEmail createBatchEmail(@RequestBody LmsBatchEmail lmsBatchEmail) {
         LmsBatchEmail newBatchEmail = new LmsBatchEmail();
         newBatchEmail.setGroupCode(lmsBatchEmail.getGroupCode());
@@ -91,6 +99,7 @@ public class BatchEmailRestController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @Operation(summary = "Delete LmsBatchEmail by id")
     public String deleteBatchEmail(@PathVariable Long id) {
         lmsBatchEmailRepository.deleteById(id);
         return "Delete success.";

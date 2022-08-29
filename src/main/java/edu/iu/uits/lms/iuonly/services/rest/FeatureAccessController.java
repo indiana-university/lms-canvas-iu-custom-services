@@ -36,6 +36,8 @@ package edu.iu.uits.lms.iuonly.services.rest;
 import edu.iu.uits.lms.iuonly.model.FeatureAccess;
 import edu.iu.uits.lms.iuonly.repository.FeatureAccessRepository;
 import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,6 +58,7 @@ import static edu.iu.uits.lms.iuonly.IuCustomConstants.WRITE;
 
 @RestController
 @RequestMapping("/rest/iu/featureaccess")
+@Tag(name = "FeatureAccessController", description = "Operations involving the FeatureAccess table")
 @Slf4j
 public class FeatureAccessController {
     @Autowired
@@ -66,24 +69,28 @@ public class FeatureAccessController {
 
     @GetMapping("/{id}")
     @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+    @Operation(summary = "Get a particular FeatureAccess object by id")
     public FeatureAccess getFeatureAccessById(@PathVariable("id") Long id) {
         return featureAccessRepository.findById(id).orElse(null);
     }
 
     @GetMapping("/featureid/{featureId}")
     @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+    @Operation(summary = "Get all FeatureAccess objects for a given featureId")
     public List<FeatureAccess> getAccessRecsForFeature(@PathVariable("featureId") String featureId) {
         return featureAccessRepository.findByFeatureId(featureId);
     }
 
     @GetMapping("/all")
     @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+    @Operation(summary = "Get all FeatureAccess objects")
     public List<FeatureAccess> getAllFeatureAccessRecs() {
         return (List<FeatureAccess>) featureAccessRepository.findAll();
     }
 
     @PutMapping("{id}")
     @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
+    @Operation(summary = "Update a FeatureAccess object with the given id")
     public FeatureAccess updateFeatureAccess(@PathVariable Long id, @RequestBody FeatureAccess featureAccess) {
         FeatureAccess updatedFeatureAccess = featureAccessRepository.findById(id).orElse(null);
 
@@ -104,6 +111,7 @@ public class FeatureAccessController {
 
     @PostMapping
     @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
+    @Operation(summary = "Create a new FeatureAccess object")
     public FeatureAccess createFeatureAccess(@RequestBody FeatureAccess featureAccess) {
         FeatureAccess newAccess = new FeatureAccess();
         newAccess.setFeatureId(featureAccess.getFeatureId());
@@ -114,6 +122,7 @@ public class FeatureAccessController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
+    @Operation(summary = "Delete a FeatureAccess object with the given id")
     public String deleteFeatureAccess(@PathVariable("id") Long id) {
         featureAccessRepository.deleteById(id);
         return "Delete success.";
@@ -121,6 +130,7 @@ public class FeatureAccessController {
 
     @DeleteMapping("/featureId/{featureId}")
     @PreAuthorize("#oauth2.hasScope('" + WRITE + "')")
+    @Operation(summary = "Delete all FeatureAccess objects with the given featureId")
     public String deleteAllAccessForFeature(@PathVariable String featureId) {
         List<FeatureAccess> allAccessForFeature = featureAccessRepository.findByFeatureId(featureId);
         if (allAccessForFeature != null) {
@@ -137,6 +147,7 @@ public class FeatureAccessController {
 
     @GetMapping("/{accountid}/{featureid}")
     @PreAuthorize("#oauth2.hasScope('" + READ + "')")
+    @Operation(summary = "Check if a given featureId is enabled in the given account, optionally including additional parent account IDs to check")
     public boolean isFeatureEnabledForAccount(@PathVariable("featureid") String featureId, @PathVariable("accountid") String accountId,
                                               @RequestParam(value = "parentAccountIds", required = false) List<String> parentAccountIds) {
         return featureAccessService.isFeatureEnabledForAccount(featureId, accountId, parentAccountIds);

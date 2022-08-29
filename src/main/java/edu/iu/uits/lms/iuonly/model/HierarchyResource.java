@@ -46,6 +46,8 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -58,6 +60,10 @@ import java.util.Date;
 @Entity
 @Table(name = "LMS_HIERARCHY_RESOURCE", uniqueConstraints = @UniqueConstraint(name = "node_u", columnNames = {"node"}))
 @SequenceGenerator(name = "LMS_HIERARCHY_RESOURCE_ID_SEQ", sequenceName = "LMS_HIERARCHY_RESOURCE_ID_SEQ", allocationSize = 1)
+@NamedQueries({
+      @NamedQuery(name = "HierarchyResource.findByHomepageTemplate",
+            query = "FROM HierarchyResource WHERE homepageTemplate = true")
+})
 @Data
 @NoArgsConstructor
 public class HierarchyResource implements Serializable {
@@ -92,6 +98,9 @@ public class HierarchyResource implements Serializable {
 
     @Column(name = "defaulttemplate")
     private boolean defaultTemplate;
+
+    @Column(name = "homepagetemplate")
+    private boolean homepageTemplate;
 
     @Column(name = "source_course_id")
     private String sourceCourseId;

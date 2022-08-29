@@ -39,11 +39,14 @@ import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.AccountService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.iuonly.model.HierarchyResource;
+import edu.iu.uits.lms.iuonly.model.ToggledHomepageTemplates;
 import edu.iu.uits.lms.iuonly.model.coursetemplating.CourseTemplatesWrapper;
 import edu.iu.uits.lms.iuonly.repository.HierarchyResourceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,6 +125,53 @@ public class HierarchyResourceService {
 
       // if we made it here, it did not find something along the way
       throw new HierarchyResourceException(bodyText);
+   }
+
+   /**
+    * Get the HierarchyResource that is marked as the "homepage" template
+    * @return The HierarchyResource that is marked as the "homepage" template
+    * @throws HierarchyResourceException if no template was found
+    */
+   public HierarchyResource getHomePageTemplate() throws HierarchyResourceException {
+      List<HierarchyResource> hierarchyResources = hierarchyResourceRepository.findByHomepageTemplate();
+      if (hierarchyResources == null || hierarchyResources.isEmpty()) {
+         throw new HierarchyResourceException("Could not find default homepage template");
+      }
+      return hierarchyResources.get(0);
+   }
+
+   /**
+    * Set the HierarchyResource as indicated by the templateId as the new "homepage" template, unsetting the previous template (if previously set)
+    * @param templateId ID of the HierarchyResource to set as the new "homepage"
+    * @return ToggledHomepageTemplates object, which can indicate the old one that was unset, as well as the new one that was set
+    */
+   @Transactional(transactionManager = "postgresdbTransactionMgr")
+   public ToggledHomepageTemplates toggleHomepageTemplates(@NonNull Long templateId) {
+      ToggledHomepageTemplates toggledHomepageTemplates = new ToggledHomepageTemplates();
+      HierarchyResource old = null;
+      try {
+         old = getHomePageTemplate();
+      } catch (HierarchyResourceException e) {
+         log.info("No previously set Homepage Template could be found");
+      }
+
+      HierarchyResource newDefaultHomepageTemplate = hierarchyResourceRepository.findById(templateId).orElse(null);
+
+      // Don't want to unset the old one if we didn't find a new one
+      if (newDefaultHomepageTemplate != null) {
+         // Unset old one
+         if (old != null) {
+            old.setHomepageTemplate(false);
+            old = hierarchyResourceRepository.save(old);
+            toggledHomepageTemplates.setOldHomepageTemplate(old);
+         }
+
+         // Set new one
+         newDefaultHomepageTemplate.setHomepageTemplate(true);
+         newDefaultHomepageTemplate = hierarchyResourceRepository.save(newDefaultHomepageTemplate);
+         toggledHomepageTemplates.setNewHomepageTemplate(newDefaultHomepageTemplate);
+      }
+      return toggledHomepageTemplates;
    }
 
 }

@@ -35,6 +35,8 @@ package edu.iu.uits.lms.iuonly.services.rest;
 
 import edu.iu.uits.lms.iuonly.model.StoredFile;
 import edu.iu.uits.lms.iuonly.repository.FileStorageRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -51,6 +53,7 @@ import java.io.ByteArrayInputStream;
 
 @RestController
 @RequestMapping({"/rest/iu/file"})
+@Tag(name = "FileAccessRestController", description = "File download functionality")
 public class FileAccessRestController {
 
    @Autowired
@@ -58,6 +61,7 @@ public class FileAccessRestController {
 
    @RequestMapping(value = "/download/{id}/{filename}", method = RequestMethod.GET)
    @Transactional(transactionManager = "postgresdbTransactionMgr")
+   @Operation(summary = "Download a template file from the HierarchyResource table")
    public ResponseEntity download(@PathVariable(name = "id") Long resourceId, @PathVariable(name = "filename") String filename) {
 
       StoredFile storedFile = fileStorageRepository.findById(resourceId).orElse(null);
