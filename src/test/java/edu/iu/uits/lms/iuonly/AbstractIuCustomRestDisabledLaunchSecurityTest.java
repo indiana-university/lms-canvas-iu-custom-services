@@ -72,6 +72,9 @@ public abstract class AbstractIuCustomRestDisabledLaunchSecurityTest {
             .andExpect(result -> assertThat("Response status", result.getResponse().getStatus(),
                   Matchers.anyOf(Matchers.is(HttpStatus.UNAUTHORIZED.value()),
                         Matchers.is(HttpStatus.FORBIDDEN.value()))));
+      // The above matcher is using an anyOf here to handle 2 different configuration cases.
+      // The first is the "normal" case where the REST endpoint configuration exists, but the user is not authorized.
+      // The second case is for when the configuration is "missing" because the tool doesn't need it as it doesn't have its own REST endpoints to configure.
    }
 
    @Test
