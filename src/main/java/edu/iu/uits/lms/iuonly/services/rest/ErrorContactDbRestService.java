@@ -42,6 +42,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +56,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOMREST_PROFILE;
+
+@Profile(IUCUSTOMREST_PROFILE)
 @RestController
 @RequestMapping("/rest/iu/errorcontact")
 @Tag(name = "ErrorContactDbRestService", description = "Operations involving the ErrorContactEvent and ErrorContactJobProfile tables")
