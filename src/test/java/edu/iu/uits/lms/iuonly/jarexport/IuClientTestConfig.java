@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.iuonly;
+package edu.iu.uits.lms.iuonly.jarexport;
 
 /*-
  * #%L
