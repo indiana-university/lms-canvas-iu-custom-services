@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,9 +51,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOMREST_PROFILE;
+
 /**
  * Created by yingwang on 10/29/15.
  */
+@Profile(IUCUSTOMREST_PROFILE)
 @RestController
 @RequestMapping("/rest/iu/batchemail")
 @Tag(name = "BatchEmailRestController", description = "Operations involving the LmsBatchEmail table")
