@@ -69,7 +69,7 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <lms-canvas-common-configuration.version>5.0.4</lms-canvas-common-configuration.version>
         <lms-canvas-services.version>5.0.9</lms-canvas-services.version>
-        <lms-email-service.version>5.0.4-SNAPSHOT</lms-email-service.version>
+        <lms-email-service.version>5.0.4</lms-email-service.version>
         <springdoc-openapi-ui.version>1.6.7</springdoc-openapi-ui.version>
 
         <!-- plugins -->
