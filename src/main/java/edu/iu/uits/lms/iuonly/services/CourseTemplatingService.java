@@ -65,7 +65,7 @@ public class CourseTemplatingService {
       return templatedCourseRepository.findById(courseId).orElse(null);
    }
 
-   private TemplatedCourse saveTemplatedCourse(TemplatedCourse templatedCourse) {
+   public TemplatedCourse saveTemplatedCourse(TemplatedCourse templatedCourse) {
       return templatedCourseRepository.save(templatedCourse);
    }
 
