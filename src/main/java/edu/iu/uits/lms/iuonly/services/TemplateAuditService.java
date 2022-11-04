@@ -54,25 +54,38 @@ public class TemplateAuditService {
       auditInfoRepository.save(auditInfo);
    }
 
+   public void audit(String courseId, String sourceCanvasCourseId, String activityType, String userLoginId) {
+      Course course = courseService.getCourse(courseId);
+      audit(course, null, sourceCanvasCourseId, activityType, userLoginId);
+   }
+
    public void audit(String courseId, HierarchyResource templateForCourse, String activityType, String userLoginId) {
       Course course = courseService.getCourse(courseId);
-      audit(course, templateForCourse, activityType, userLoginId);
+      audit(course, templateForCourse, null, activityType, userLoginId);
    }
 
    public void audit(Course course, HierarchyResource templateForCourse, String activityType, String userLoginId) {
-      AuditInfo ai = AuditInfo.builder()
+      audit(course, templateForCourse, null, activityType, userLoginId);
+   }
+
+   public void audit(Course course, HierarchyResource templateForCourse, String sourceCanvasCourseId, String activityType, String userLoginId) {
+      AuditInfo.AuditInfoBuilder aib = AuditInfo.builder()
             .canvasCourseId(course.getId())
             .canvasTermId(course.getTerm().getSisTermId())
             .canvasCourseCode(course.getCourseCode())
             .canvasTermName(course.getTerm().getName())
-            .templateId(templateForCourse.getId().toString())
-            .templateName(templateForCourse.getDisplayName())
-            .templateFileName(templateForCourse.getStoredFile().getDisplayName())
-            .templateSponsor(templateForCourse.getSponsor())
-            .templateNode(templateForCourse.getNode())
+            .sourceCanvasCourseId(sourceCanvasCourseId)
             .activityType(activityType)
-            .activityUser(userLoginId)
-            .build();
-      audit(ai);
+            .activityUser(userLoginId);
+
+      if (templateForCourse != null) {
+         aib.templateId(templateForCourse.getId().toString())
+               .templateName(templateForCourse.getDisplayName())
+               .templateFileName(templateForCourse.getStoredFile().getDisplayName())
+               .templateSponsor(templateForCourse.getSponsor())
+               .templateNode(templateForCourse.getNode());
+      }
+
+      audit(aib.build());
    }
 }

@@ -116,6 +116,9 @@ New field to capture who applied the template - username or canvas3 if provision
    @Column(name = "ACTIVITY_USER")
    private String activityUser;
 
+   @Column(name = "SOURCE_CANVAS_COURSE_ID")
+   private String sourceCanvasCourseId;
+
    @PreUpdate
    @PrePersist
    public void updateTimeStamps() {
