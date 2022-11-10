@@ -79,7 +79,7 @@ public class TemplatedCourse extends BaseObject {
 
    @Column(name = "iu_crseld_status_added")
    @NonNull
-   private boolean iu_crseld_status_added;
+   private boolean iuCrseldStatusAdded;
 
    public TemplatedCourse(String courseId, String sisCourseId, String termId, String status) {
       this.courseId = courseId;
