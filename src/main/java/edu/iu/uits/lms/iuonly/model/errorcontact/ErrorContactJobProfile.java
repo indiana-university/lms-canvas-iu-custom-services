@@ -70,7 +70,7 @@ public class ErrorContactJobProfile implements Serializable {
     private String jobCode;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "errorContactJobProfile", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "errorContactJobProfile", fetch = FetchType.EAGER)
     private List<ErrorContactEvent> errorContactEvents;
 
     @Column(name = "DESCRIPTION")

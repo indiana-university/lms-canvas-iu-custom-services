@@ -38,6 +38,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -69,6 +70,7 @@ import java.util.Date;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "errorContactJobProfile")
 public class ErrorContactEvent implements Serializable {
     @Id
     @Column(name = "ID")
