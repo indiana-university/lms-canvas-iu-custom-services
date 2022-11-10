@@ -39,6 +39,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -76,7 +77,7 @@ public class DeptProvisioningUser implements Serializable {
    private String canvasUserId;
 
    @Column(name = "GROUP_CODE")
-   @ElementCollection
+   @ElementCollection(fetch = FetchType.EAGER)
    @CollectionTable(name = "DEPT_PROV_USER_GROUP", joinColumns = @JoinColumn(name = "DEPT_PROV_USERS_ID"))
    private List<String> groupCode;
 
