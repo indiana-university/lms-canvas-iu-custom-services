@@ -33,6 +33,7 @@ package edu.iu.uits.lms.iuonly.jarexport;
  * #L%
  */
 
+import edu.iu.uits.lms.iuonly.repository.AuditInfoRepository;
 import edu.iu.uits.lms.iuonly.repository.DeptProvisioningUserRepository;
 import edu.iu.uits.lms.iuonly.repository.ErrorContactEventRepository;
 import edu.iu.uits.lms.iuonly.repository.ErrorContactJobProfileRepository;
@@ -89,4 +90,7 @@ public class IuClientTestConfig {
 
    @MockBean
    public FileStorageRepository fileStorageRepository;
+
+   @MockBean
+   public AuditInfoRepository auditInfoRepository;
 }
