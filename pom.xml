@@ -12,7 +12,7 @@
     <artifactId>lms-canvas-iu-custom-services</artifactId>
     <name>lms-canvas-iu-custom-services</name>
     <packaging>jar</packaging>
-    <version>5.0.13-SNAPSHOT</version>
+    <version>5.0.13</version>
 
     <description>Shared services for the lms-canvas LTI tools to interact with custom IU things</description>
     <url>https://github.com/indiana-university/lms-canvas-iu-custom-services</url>
@@ -62,7 +62,7 @@
         <connection>scm:git:https://github.com/indiana-university/lms-canvas-iu-custom-services.git</connection>
         <developerConnection>scm:git:https://github.com/indiana-university/lms-canvas-iu-custom-services.git</developerConnection>
         <url>https://github.com/indiana-university/lms-canvas-iu-custom-services</url>
-        <tag>HEAD</tag>
+        <tag>lms-canvas-iu-custom-services-5.0.13</tag>
     </scm>
 
     <properties>
