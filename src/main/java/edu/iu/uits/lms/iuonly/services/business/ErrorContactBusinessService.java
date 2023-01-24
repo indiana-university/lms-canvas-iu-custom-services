@@ -209,7 +209,7 @@ public class ErrorContactBusinessService {
         emailDetails.setRecipients(new String[]{derdackConfig.getRecipientEmail()});
 
         try {
-            emailService.sendEmail(emailDetails, false);
+            emailService.sendEmail(emailDetails);
         } catch (LmsEmailTooBigException | MessagingException e) {
             log.error("Error sending email");
         }
