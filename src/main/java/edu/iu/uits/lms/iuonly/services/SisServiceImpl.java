@@ -34,10 +34,9 @@ package edu.iu.uits.lms.iuonly.services;
  */
 
 import edu.iu.uits.lms.iuonly.model.ListWrapper;
-import edu.iu.uits.lms.iuonly.model.SudsAdvisor;
-import edu.iu.uits.lms.iuonly.model.SudsClass;
-import edu.iu.uits.lms.iuonly.model.SudsCourse;
-import edu.iu.uits.lms.iuonly.model.SudsFerpaEntry;
+import edu.iu.uits.lms.iuonly.model.SisClass;
+import edu.iu.uits.lms.iuonly.model.SisCourse;
+import edu.iu.uits.lms.iuonly.model.SisFerpaEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,26 +54,24 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SudsServiceImpl {
-    private static final String SUDS_ADVISOR_COLUMNS = "emplid, institution, advisor_role, stdnt_advisor_nbr, advisor_id, acad_career, acad_prog, acad_plan, descr, acad_career_descr, iu_ims_username, emailid, first_name, last_name, status, iu_active, audit_stamp";
-    private static final String SUDS_ADVISOR_TABLE = "iu_sis.ps_iu_oncext_advr";
-    private static final String SUDS_COURSE_COLUMNS = "year, term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_scs_flag, status, iu_active, class_nbr, strm, iu_instrc_mode_des, iu_etext_isbns";
-    private static final String SUDS_COURSE_TABLE = "iu_sis.ps_iu_oncext_clas";
-    private static final String SUDS_ROSTER_FERPA_COLUMNS = "ferpa, iu_ims_username";
-    private static final String SUDS_ROSTER_TABLE = "iu_sis.ps_iu_oncext_rstr";
-    private static final String SUDS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
-    private static final String SUDS_CLASS_TABLE = "iu_sis.ps_class_tbl";
-    private static final String SUDS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
+public class SisServiceImpl {
+    private static final String SIS_COURSE_COLUMNS = "year, term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_scs_flag, status, iu_active, class_nbr, strm, iu_instrc_mode_des, iu_etext_isbns";
+    private static final String SIS_COURSE_TABLE = "iu_sis.ps_iu_oncext_clas";
+    private static final String SIS_ROSTER_FERPA_COLUMNS = "ferpa, iu_ims_username";
+    private static final String SIS_ROSTER_TABLE = "iu_sis.ps_iu_oncext_rstr";
+    private static final String SIS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
+    private static final String SIS_CLASS_TABLE = "iu_sis.ps_class_tbl";
+    private static final String SIS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
     @Qualifier("denododb")
     DataSource dataSource;
 
-    public SudsCourse getSudsCourseBySiteId(String siteId) {
-        SudsCourse sudsCourse = null;
+    public SisCourse getSisCourseBySiteId(String siteId) {
+        SisCourse sisCourse = null;
         Connection conn = getConnection();
 
-        String sql = "select " + SUDS_COURSE_COLUMNS + " from " + SUDS_COURSE_TABLE + " where iu_site_id = ?";
+        String sql = "select " + SIS_COURSE_COLUMNS + " from " + SIS_COURSE_TABLE + " where iu_site_id = ?";
         log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
 
         PreparedStatement stmt = null;
@@ -85,27 +82,27 @@ public class SudsServiceImpl {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                sudsCourse = translateRsToSudsCourse(rs);
+                sisCourse = translateRsToSisCourse(rs);
             }
-            if (sudsCourse == null) {
-                log.warn("Could not find SudsCourseBySiteId:" + siteId);
+            if (sisCourse == null) {
+                log.warn("Could not find SisCourseBySiteId:" + siteId);
                 return null;
             }
         } catch (SQLException e) {
-            log.error("Error getting suds course", e);
+            log.error("Error getting sis course", e);
             throw new IllegalStateException();
         } finally {
             close(conn, stmt, rs);
         }
 
-        return sudsCourse;
+        return sisCourse;
     }
 
-    public SudsCourse getSudsArchiveCourseBySiteId(String siteId) {
-        SudsCourse sudsCourse = null;
+    public SisCourse getSisArchiveCourseBySiteId(String siteId) {
+        SisCourse sisCourse = null;
         Connection conn = getConnection();
 
-        String sql = "select " + SUDS_COURSE_COLUMNS + " from " + SUDS_COURSE_ARCHIVE_TABLE + " where iu_site_id = ?";
+        String sql = "select " + SIS_COURSE_COLUMNS + " from " + SIS_COURSE_ARCHIVE_TABLE + " where iu_site_id = ?";
         log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
 
         PreparedStatement stmt = null;
@@ -116,28 +113,28 @@ public class SudsServiceImpl {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                sudsCourse = translateRsToSudsCourse(rs);
+                sisCourse = translateRsToSisCourse(rs);
             }
-            if (sudsCourse == null) {
-                log.warn("Could not find SudsCourseBySiteId:" + siteId);
+            if (sisCourse == null) {
+                log.warn("Could not find SisCourseBySiteId:" + siteId);
                 return null;
             }
         } catch (SQLException e) {
-            log.error("Error getting suds course", e);
+            log.error("Error getting sis course", e);
             throw new IllegalStateException();
         } finally {
             close(conn, stmt, rs);
         }
 
-        return sudsCourse;
+        return sisCourse;
     }
 
-    public List<SudsFerpaEntry> getFerpaEntriesByListOfSisUserIds(ListWrapper listWrapper, boolean justYs) {
+    public List<SisFerpaEntry> getFerpaEntriesByListOfSisUserIds(ListWrapper listWrapper, boolean justYs) {
         long start = System.currentTimeMillis();
-        List<SudsFerpaEntry> entries = new ArrayList<>();
+        List<SisFerpaEntry> entries = new ArrayList<>();
         Connection conn = getConnection();
 
-        String sql = "select distinct " + SUDS_ROSTER_FERPA_COLUMNS + " from " + SUDS_ROSTER_TABLE + " where " +
+        String sql = "select distinct " + SIS_ROSTER_FERPA_COLUMNS + " from " + SIS_ROSTER_TABLE + " where " +
               LmsSqlUtils.buildWhereInClause("iu_ims_username", listWrapper.getListItems(), false);
 
         if (justYs) {
@@ -154,7 +151,7 @@ public class SudsServiceImpl {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                SudsFerpaEntry entry = translateRsToFerpaSudsEntry(rs);
+                SisFerpaEntry entry = translateRsToFerpaSisEntry(rs);
                 entries.add(entry);
             }
             if (entries.isEmpty()) {
@@ -171,69 +168,34 @@ public class SudsServiceImpl {
         return entries;
     }
 
-    public List<SudsAdvisor> getActiveSudsAdvisorByEmplid(String emplid) {
-        long start = System.currentTimeMillis();
-        Connection conn = getConnection();
-
-        List<SudsAdvisor> sudsAdvisors = new ArrayList<SudsAdvisor>();
-
-        String sql = "select " + SUDS_ADVISOR_COLUMNS + " from " + SUDS_ADVISOR_TABLE + " where emplid = ? and IU_ACTIVE = ?";
-
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, emplid);
-            stmt.setString(2, "A");
-            rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                SudsAdvisor advisor = translateRsToSudsAdvisor(rs);
-                sudsAdvisors.add(advisor);
-            }
-            if (sudsAdvisors.isEmpty()) {
-                log.warn("Could not find SudsAdvisorByEmplid:" + emplid);
-                return sudsAdvisors;
-            }
-        } catch (SQLException e) {
-            log.error("{}", e);
-            throw new IllegalStateException(e);
-        } finally {
-            close(conn, stmt, rs);
-        }
-        long end = System.currentTimeMillis();
-        log.debug("getActiveSudsAdvisorByEmplid took " + (end - start) + " millis");
-        return sudsAdvisors;
-    }
-
     public boolean isLegitSisCourse(String iu_site_id, String strm) {
-        // translating iu_site_id into a SudsCourse object that will be useful in getSudsClassByCourse
-        SudsCourse sudsCourse = new SudsCourse();
-        sudsCourse.setSTerm(strm);
+        // translating iu_site_id into a SisCourse object that will be useful in getSisClassByCourse
+        SisCourse sisCourse = new SisCourse();
+        sisCourse.setSTerm(strm);
 
         // parsing is lame! But, this will get everything after the last dash of the iu_site_id
         String[] idSplit = iu_site_id.split("-");
         int dashes = idSplit.length - 1;
         if (dashes == 4) {
             String classNumber = idSplit[4];
-            sudsCourse.setClassNumber(classNumber);
+            sisCourse.setClassNumber(classNumber);
 
-            // got the stuff, now send it to getSudsClassByCourse to see if it finds anything
-            SudsClass sudsClass = getSudsClassByCourse(sudsCourse.getSTerm(), sudsCourse.getClassNumber(),
-                  sudsCourse.getCampus(), false);
-            return sudsClass != null;
+            // got the stuff, now send it to getSisClassByCourse to see if it finds anything
+            SisClass sisClass = getSisClassByCourse(sisCourse.getSTerm(), sisCourse.getClassNumber(),
+                  sisCourse.getCampus(), false);
+            return sisClass != null;
         } else {
             return false;
         }
     }
 
-    public SudsClass getSudsClassByCourse(String strm, String classNumber, String campus,  boolean includeCampus) {
+    public SisClass getSisClassByCourse(String strm, String classNumber, String campus, boolean includeCampus) {
         long start = System.currentTimeMillis();
 
-        SudsClass sudsClass = null;
+        SisClass sisClass = null;
         Connection conn = getConnection();
 
-        String sql = "select " + SUDS_CLASS_COLUMNS + " from " + SUDS_CLASS_TABLE + " " +
+        String sql = "select " + SIS_CLASS_COLUMNS + " from " + SIS_CLASS_TABLE + " " +
               "where strm = ? and class_nbr = ?";
 
         if (includeCampus) {
@@ -252,29 +214,29 @@ public class SudsServiceImpl {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                sudsClass = translateRsToSudsClass(rs);
+                sisClass = translateRsToSisClass(rs);
             }
-            if (sudsClass == null) {
-                String message = "Could not find SudsClassByCourse: ({0}, {1}, {2})";
+            if (sisClass == null) {
+                String message = "Could not find SisClassByCourse: ({0}, {1}, {2})";
                 log.warn(MessageFormat.format(message, strm, classNumber, campus));
                 return null;
             }
         } catch (SQLException e) {
-            log.error("Error getting suds class by course", e);
+            log.error("Error getting sis class by course", e);
             throw new IllegalStateException(e);
         } finally {
             close(conn, stmt, rs);
         }
         long end = System.currentTimeMillis();
-        log.debug("getSudsClassByCourse took " + (end - start) + " millis");
-        return sudsClass;
+        log.debug("getSisClassByCourse took " + (end - start) + " millis");
+        return sisClass;
     }
 
     public int getIuoccCourseCount(String siteId) {
         int courseCount = 0;
         Connection conn = getConnection();
 
-        String sql = "select count(*) as total from " + SUDS_COURSE_TABLE + " where iu_occ_site_id = ?";
+        String sql = "select count(*) as total from " + SIS_COURSE_TABLE + " where iu_occ_site_id = ?";
         log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
 
         PreparedStatement stmt = null;
@@ -288,7 +250,7 @@ public class SudsServiceImpl {
                 courseCount = rs.getInt("total");
             }
         } catch (SQLException e) {
-            log.error("Error getting suds course", e);
+            log.error("Error getting sis course", e);
             throw new IllegalStateException();
         } finally {
             close(conn, stmt, rs);
@@ -296,86 +258,56 @@ public class SudsServiceImpl {
         return courseCount;
     }
 
-    /*
-     * simply translates JDBC into POJO without closing ResultSet
-     */
-    private SudsAdvisor translateRsToSudsAdvisor(ResultSet rs) {
-        SudsAdvisor sudsAdvisor = new SudsAdvisor();
-        try {
-            sudsAdvisor.setEmplId(rs.getString(1));
-            sudsAdvisor.setInstitution(rs.getString(2));
-            sudsAdvisor.setAdvisorRole(rs.getString(3));
-            sudsAdvisor.setStudentAdvisorNumber(rs.getString(4));
-            sudsAdvisor.setAdvisorId(rs.getString(5));
-            sudsAdvisor.setAcademicCareer(rs.getString(6));
-            sudsAdvisor.setAcademicProgram(rs.getString(7));
-            sudsAdvisor.setAcademicPlan(rs.getString(8));
-            sudsAdvisor.setDescription(rs.getString(9));
-            sudsAdvisor.setAcademicCareerDescription(rs.getString(10));
-            sudsAdvisor.setAdvisorIuImsUsername(rs.getString(11));
-            sudsAdvisor.setAdvisorEmailId(rs.getString(12));
-            sudsAdvisor.setAdvisorFirstName(rs.getString(13));
-            sudsAdvisor.setAdvisorLastName(rs.getString(14));
-            sudsAdvisor.setStatus(rs.getString(15));
-            sudsAdvisor.setIuActive(rs.getString(16));
-            sudsAdvisor.setAuditStampString(rs.getString(17));
-        } catch (SQLException e) {
-            log.error("{}", e);
-            throw new IllegalStateException(e);
-        }
-        return sudsAdvisor;
-    }
-
-    private SudsClass translateRsToSudsClass(ResultSet rs) {
-        SudsClass sudsClass = new SudsClass();
+    private SisClass translateRsToSisClass(ResultSet rs) {
+        SisClass sisClass = new SisClass();
         try {
             //crse_id, crse_offer_nbr, strm, institution, class_nbr";
-            sudsClass.setCourseId(rs.getString(1));
-            sudsClass.setCourseOfferNumber(rs.getString(2));
-            sudsClass.setSTerm(rs.getString(3));
-            sudsClass.setInstitution(rs.getString(4));
-            sudsClass.setClassNumber(rs.getString(5));
+            sisClass.setCourseId(rs.getString(1));
+            sisClass.setCourseOfferNumber(rs.getString(2));
+            sisClass.setSTerm(rs.getString(3));
+            sisClass.setInstitution(rs.getString(4));
+            sisClass.setClassNumber(rs.getString(5));
         } catch (SQLException e) {
             log.error("Error: ", e);
             throw new IllegalStateException(e);
         }
-        return sudsClass;
+        return sisClass;
     }
 
     /*
      * simply translates JDBC into POJO without closing ResultSet
      */
-    private SudsCourse translateRsToSudsCourse(ResultSet rs) {
-        SudsCourse sudsCourse = new SudsCourse();
+    private SisCourse translateRsToSisCourse(ResultSet rs) {
+        SisCourse sisCourse = new SisCourse();
         try {
-            sudsCourse.setYear(rs.getString(1));
-            sudsCourse.setTerm(rs.getString(2));
-            sudsCourse.setDescriptionShort(rs.getString(3));
-            sudsCourse.setCampus(rs.getString(4));
-            sudsCourse.setIuDeptCd(rs.getString(5));
-            sudsCourse.setIuCourseCd(rs.getString(6));
-            sudsCourse.setIuSiteId(rs.getString(7));
-            sudsCourse.setDescription(rs.getString(8));
-            sudsCourse.setIuCourseLoadStatus(rs.getString(9));
-            sudsCourse.setIuScsFlag(rs.getString(10));
-            sudsCourse.setStatus(rs.getString(11));
-            sudsCourse.setIuActive(rs.getString(12));
-            sudsCourse.setClassNumber(rs.getString(13));
-            sudsCourse.setSTerm(rs.getString(14));
-            sudsCourse.setInstructionMode(rs.getString(15));
-            sudsCourse.setEtextIsbns(rs.getString(16));
+            sisCourse.setYear(rs.getString(1));
+            sisCourse.setTerm(rs.getString(2));
+            sisCourse.setDescriptionShort(rs.getString(3));
+            sisCourse.setCampus(rs.getString(4));
+            sisCourse.setIuDeptCd(rs.getString(5));
+            sisCourse.setIuCourseCd(rs.getString(6));
+            sisCourse.setIuSiteId(rs.getString(7));
+            sisCourse.setDescription(rs.getString(8));
+            sisCourse.setIuCourseLoadStatus(rs.getString(9));
+            sisCourse.setIuScsFlag(rs.getString(10));
+            sisCourse.setStatus(rs.getString(11));
+            sisCourse.setIuActive(rs.getString(12));
+            sisCourse.setClassNumber(rs.getString(13));
+            sisCourse.setSTerm(rs.getString(14));
+            sisCourse.setInstructionMode(rs.getString(15));
+            sisCourse.setEtextIsbns(rs.getString(16));
         } catch (SQLException e) {
             log.error("Error: ", e);
             throw new IllegalStateException(e);
         }
-        return sudsCourse;
+        return sisCourse;
     }
 
     /*
      * simply translates JDBC into POJO without closing ResultSet
      */
-    private SudsFerpaEntry translateRsToFerpaSudsEntry(ResultSet rs) {
-        SudsFerpaEntry entry = new SudsFerpaEntry();
+    private SisFerpaEntry translateRsToFerpaSisEntry(ResultSet rs) {
+        SisFerpaEntry entry = new SisFerpaEntry();
         try {
             entry.setFerpa(rs.getString(1));
             entry.setIuImsUsername(rs.getString(2));

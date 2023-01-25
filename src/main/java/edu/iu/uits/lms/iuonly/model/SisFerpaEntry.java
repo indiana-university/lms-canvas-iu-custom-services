@@ -42,7 +42,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SudsFerpaEntry implements Serializable {
+public class SisFerpaEntry implements Serializable {
     private String ferpa;
     private String iuImsUsername;
 }
