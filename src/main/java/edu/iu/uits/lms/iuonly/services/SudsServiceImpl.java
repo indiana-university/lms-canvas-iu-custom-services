@@ -40,6 +40,7 @@ import edu.iu.uits.lms.iuonly.model.SudsCourse;
 import edu.iu.uits.lms.iuonly.model.SudsFerpaEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -56,16 +57,17 @@ import java.util.List;
 @Slf4j
 public class SudsServiceImpl {
     private static final String SUDS_ADVISOR_COLUMNS = "emplid, institution, advisor_role, stdnt_advisor_nbr, advisor_id, acad_career, acad_prog, acad_plan, descr, acad_career_descr, iu_ims_username, emailid, first_name, last_name, status, iu_active, audit_stamp";
-    private static final String SUDS_ADVISOR_TABLE = "sysadm.ps_iu_oncext_advr";
+    private static final String SUDS_ADVISOR_TABLE = "iu_sis.ps_iu_oncext_advr";
     private static final String SUDS_COURSE_COLUMNS = "year, term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_scs_flag, status, iu_active, class_nbr, strm, iu_instrc_mode_des, iu_etext_isbns";
-    private static final String SUDS_COURSE_TABLE = "sysadm.ps_iu_oncext_clas";
+    private static final String SUDS_COURSE_TABLE = "iu_sis.ps_iu_oncext_clas";
     private static final String SUDS_ROSTER_FERPA_COLUMNS = "ferpa, iu_ims_username";
-    private static final String SUDS_ROSTER_TABLE = "sysadm.ps_iu_oncext_rstr";
+    private static final String SUDS_ROSTER_TABLE = "iu_sis.ps_iu_oncext_rstr";
     private static final String SUDS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
-    private static final String SUDS_CLASS_TABLE = "sysadm.ps_class_tbl";
+    private static final String SUDS_CLASS_TABLE = "iu_sis.ps_class_tbl";
     private static final String SUDS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
+    @Qualifier("denododb")
     DataSource dataSource;
 
     public SudsCourse getSudsCourseBySiteId(String siteId) {
