@@ -56,11 +56,11 @@ import java.util.List;
 @Slf4j
 public class SisServiceImpl {
     private static final String SIS_COURSE_COLUMNS = "year, term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_scs_flag, status, iu_active, class_nbr, strm, iu_instrc_mode_des, iu_etext_isbns";
-    private static final String SIS_COURSE_TABLE = "iu_sis.ps_iu_oncext_clas";
+    private static final String SIS_COURSE_TABLE = "iu_lms.ps_iu_oncext_clas";
     private static final String SIS_ROSTER_FERPA_COLUMNS = "ferpa, iu_ims_username";
-    private static final String SIS_ROSTER_TABLE = "iu_sis.ps_iu_oncext_rstr";
+    private static final String SIS_ROSTER_TABLE = "iu_lms.ps_iu_oncext_rstr";
     private static final String SIS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
-    private static final String SIS_CLASS_TABLE = "iu_sis.ps_class_tbl";
+    private static final String SIS_CLASS_TABLE = "iu_lms.ps_class_tbl";
     private static final String SIS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
