@@ -61,7 +61,6 @@ public class SisServiceImpl {
     private static final String SIS_ROSTER_TABLE = "iu_lms.ps_iu_oncext_rstr";
     private static final String SIS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
     private static final String SIS_CLASS_TABLE = "iu_lms.ps_class_tbl";
-    private static final String SIS_COURSE_ARCHIVE_TABLE = "lms.ps_iu_oncext_clas_archive";
 
     @Autowired
     @Qualifier("denododb")
@@ -72,37 +71,6 @@ public class SisServiceImpl {
         Connection conn = getConnection();
 
         String sql = "select " + SIS_COURSE_COLUMNS + " from " + SIS_COURSE_TABLE + " where iu_site_id = ?";
-        log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
-
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, siteId);
-            rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                sisCourse = translateRsToSisCourse(rs);
-            }
-            if (sisCourse == null) {
-                log.warn("Could not find SisCourseBySiteId:" + siteId);
-                return null;
-            }
-        } catch (SQLException e) {
-            log.error("Error getting sis course", e);
-            throw new IllegalStateException();
-        } finally {
-            close(conn, stmt, rs);
-        }
-
-        return sisCourse;
-    }
-
-    public SisCourse getSisArchiveCourseBySiteId(String siteId) {
-        SisCourse sisCourse = null;
-        Connection conn = getConnection();
-
-        String sql = "select " + SIS_COURSE_COLUMNS + " from " + SIS_COURSE_ARCHIVE_TABLE + " where iu_site_id = ?";
         log.debug("Executing SQL: " + sql + " with query parameters: " + siteId);
 
         PreparedStatement stmt = null;
