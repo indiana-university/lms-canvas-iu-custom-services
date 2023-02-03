@@ -61,6 +61,8 @@ public class SisServiceImpl {
     private static final String SIS_ROSTER_TABLE = "iu_lms.ps_iu_oncext_rstr";
     private static final String SIS_CLASS_COLUMNS = "crse_id, crse_offer_nbr, strm, institution, class_nbr";
     private static final String SIS_CLASS_TABLE = "iu_lms.ps_class_tbl";
+    private static final String SIS_COURSE_LOOKUP_COLUMNS = "iu_site_id, strm, institution, subject, catalog_nbr, class_nbr";
+    private static final String SIS_COURSE_LOOKUP = "iu_lms.ps_sis_lookup";
 
     @Autowired
     @Qualifier("denododb")
@@ -136,24 +138,32 @@ public class SisServiceImpl {
         return entries;
     }
 
-    public boolean isLegitSisCourse(String iu_site_id, String strm) {
-        // translating iu_site_id into a SisCourse object that will be useful in getSisClassByCourse
-        SisCourse sisCourse = new SisCourse();
-        sisCourse.setSTerm(strm);
+    public boolean isLegitSisCourse(String iu_site_id) {
+        boolean sisCourse = false;
+        Connection conn = getConnection();
 
-        // parsing is lame! But, this will get everything after the last dash of the iu_site_id
-        String[] idSplit = iu_site_id.split("-");
-        int dashes = idSplit.length - 1;
-        if (dashes == 4) {
-            String classNumber = idSplit[4];
-            sisCourse.setClassNumber(classNumber);
+        String sql = "select " + SIS_COURSE_LOOKUP_COLUMNS + " from " + SIS_COURSE_LOOKUP + " where iu_site_id = ?";
+        log.debug("Executing SQL: " + sql + " with query parameters: " + iu_site_id);
 
-            // got the stuff, now send it to getSisClassByCourse to see if it finds anything
-            SisClass sisClass = getSisClassByCourse(sisCourse.getSTerm(), sisCourse.getClassNumber(),
-                  sisCourse.getCampus(), false);
-            return sisClass != null;
-        } else {
-            return false;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, iu_site_id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // if a record exists, set to true!
+                sisCourse = true;
+            }
+
+            // return boolean result
+            return sisCourse;
+        } catch (SQLException e) {
+            log.error("Error getting sis course", e);
+            throw new IllegalStateException();
+        } finally {
+            close(conn, stmt, rs);
         }
     }
 
