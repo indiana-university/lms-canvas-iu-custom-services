@@ -156,15 +156,15 @@ public class SisServiceImpl {
                 // if a record exists, set to true!
                 sisCourse = true;
             }
-
-            // return boolean result
-            return sisCourse;
         } catch (SQLException e) {
             log.error("Error getting sis course", e);
             throw new IllegalStateException();
         } finally {
             close(conn, stmt, rs);
         }
+
+        // return boolean result
+        return sisCourse;
     }
 
     public SisClass getSisClassByCourse(String strm, String classNumber, String campus, boolean includeCampus) {
