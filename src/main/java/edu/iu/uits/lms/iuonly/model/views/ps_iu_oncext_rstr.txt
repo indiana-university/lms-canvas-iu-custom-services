@@ -1,0 +1,4 @@
+CREATE OR REPLACE VIEW ps_iu_oncext_rstr FOLDER = '/sis data' AS
+
+SELECT strm, class_nbr, emplid, "year", term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, ferpa, iu_ims_username, emailid, last_name, first_name, iu_req_desig, status, attrvalue, iu_active, acad_career_descr, institution_descr, iu_enrl_wdrw_dt, iu_enrl_swap_dt, audit_stamp, iu_edx_plan
+FROM iu_sis.ps_iu_oncext_rstr CONTEXT ('formatted' = 'yes');

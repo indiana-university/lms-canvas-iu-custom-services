@@ -1,0 +1,16 @@
+CREATE OR REPLACE VIEW ps_sis_lookup FOLDER = '/sis data' AS
+
+SELECT
+case
+	WHEN SUBSTR(STRM, 4, 1 ) = 2 THEN 'SP'
+	WHEN SUBSTR(STRM, 4, 1 ) = 5 THEN 'SU'
+	WHEN SUBSTR(STRM, 4, 1 ) = 8 THEN 'FA'
+	WHEN SUBSTR(STRM, 4, 1 ) = 9 THEN 'WI'
+	ELSE ''
+END || SUBSTR(STRM, 2, 2) || '-' || SUBSTR(INSTITUTION, 3, 2) || '-' ||
+case
+	WHEN INSTR(SUBJECT, '-') = -1 then SUBJECT || '-'
+	else SUBSTR(SUBJECT, 1, INSTR(SUBJECT, '-')) || '-' || TRIM(SUBSTR(SUBJECT, INSTR(SUBJECT, '-')+2))
+end || TRIM(CATALOG_NBR) || '-' || CLASS_NBR AS iu_site_id,
+strm, institution, subject, catalog_nbr, class_nbr
+FROM iu_sis.ps_class_tbl where strm > 4119 CONTEXT ('formatted' = 'yes');

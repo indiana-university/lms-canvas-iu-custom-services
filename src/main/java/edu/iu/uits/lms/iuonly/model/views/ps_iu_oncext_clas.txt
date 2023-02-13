@@ -1,0 +1,4 @@
+CREATE OR REPLACE VIEW ps_iu_oncext_clas FOLDER = '/sis data' AS
+
+SELECT strm, class_nbr, "year", term, descrshort, campus, iu_dept_cd, iu_course_cd, iu_site_id, descr, iu_crseld_status, iu_dlt1, iu_dlt2, iu_dlt3, iu_dlt4, iu_dlt5, iu_dlt6, iu_dlt7, iu_dlt8, iu_dlt9, iu_dlt10, iu_scs_flag, status, attrvalue, iu_active, grading_basis, institution, acad_career_descr, iu_acad_grp_desc, ssr_component, enrl_tot, start_dt, end_dt, iu_acad_org_desc, iu_instrc_mode_des, combined_section, iu_combined_list, combination_type, location, catalog_nbr, iu_subject_suffix, iu_session_descr, iu_lms_descr, iu_lms_topic, iu_occ_site_id, acad_group, audit_stamp, iu_etext_isbns
+FROM iu_sis.ps_iu_oncext_clas CONTEXT ('formatted' = 'yes');
