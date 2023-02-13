@@ -86,132 +86,153 @@ public class ErrorContactBusinessService {
     }
 
     public ErrorContactResponse postEvent(@NonNull String jobCode, @NonNull String message, boolean alwaysPage) {
-        ErrorContactJobProfile errorContactJobProfile = errorContactJobProfileRepository.findByJobCode(jobCode);
-
-        if (errorContactJobProfile == null) {
-            log.error("No job profile found for jobCode = {}", jobCode);
-
-            ErrorContactResponse resultErrorContactResponse = new ErrorContactResponse();
-            resultErrorContactResponse.setExternalId("-1");
-            resultErrorContactResponse.setStatus("jobCode not found");
-
-            return resultErrorContactResponse;
-        }
-
-        log.info("Found job profile = {}", errorContactJobProfile);
-
-        log.info("Always page = {}", alwaysPage);
-
-        StringBuilder emailBody = new StringBuilder();
-
-        Integer duplicateThresholdMinutes = errorContactJobProfile.getDuplicateMinutesThreshold();
-        Integer duplicateMaxCount = errorContactJobProfile.getDuplicateMaxCount();
-
-        boolean doPage = alwaysPage;
-
-        // We need to start at 1 because this current error isn't in this count
-        int jobcodeEventsWithinThreshold = 1;
-
-        StringBuilder emailFirstPartMessage = new StringBuilder();
-        emailFirstPartMessage.append("\nThe job ");
-        emailFirstPartMessage.append(jobCode);
-        emailFirstPartMessage.append(" has failed");
-
-        if (duplicateThresholdMinutes != null && duplicateMaxCount != null) {
-
-            if (! alwaysPage) {
-                jobcodeEventsWithinThreshold = jobcodeEventsWithinThreshold +
-                        errorContactEventRepository.numberOfJobCodesNoOlderThanMinutes(jobCode, duplicateThresholdMinutes);
-                log.error("checked for past jobs and got job # = {}", jobcodeEventsWithinThreshold);
-            }
-
-            emailFirstPartMessage.append(" ");
-            emailFirstPartMessage.append(jobcodeEventsWithinThreshold);
-            emailFirstPartMessage.append(" times.");
-
-            if (jobcodeEventsWithinThreshold >= duplicateMaxCount) {
-                // it's paging time
-                log.info("Paging for jobCode = {}", jobCode);
-
-                doPage = true;
-            }
-        } else {
-            emailFirstPartMessage.append(".");
-        }
-
-        ErrorContactEvent errorContactEvent = new ErrorContactEvent();
-        errorContactEvent.setErrorContactJobProfile(errorContactJobProfile);
-        errorContactEvent.setMessage(message);
-        errorContactEvent.setAction(doPage ? "PAGED" : "EMAILED");
-
         ErrorContactResponse resultErrorContactResponse = null;
-
         String subject = emailService.getStandardHeader() + " LMS Microservices job " + jobCode;
 
-        // Page and email
-        if (doPage) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        try {
+            ErrorContactJobProfile errorContactJobProfile = errorContactJobProfileRepository.findByJobCode(jobCode);
 
-            Map<String, Object> formMap = new HashMap<>();
+            if (errorContactJobProfile == null) {
+                log.error("No job profile found for jobCode = {}", jobCode);
 
-            formMap.put("team", derdackConfig.getTeam());
-            formMap.put("subject", subject);
-            formMap.put("body", subject + " - " + message);
+                resultErrorContactResponse = new ErrorContactResponse();
+                resultErrorContactResponse.setExternalId("-1");
+                resultErrorContactResponse.setStatus("jobCode not found");
 
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(formMap, headers);
+                return resultErrorContactResponse;
+            }
 
-            String url = derdackConfig.getBaseUrl() + "/events";
+            log.info("Found job profile = {}", errorContactJobProfile);
 
-            ResponseEntity<ErrorContactResponse> response = null;
+            log.info("Always page = {}", alwaysPage);
+
+            StringBuilder emailBody = new StringBuilder();
+
+            Integer duplicateThresholdMinutes = errorContactJobProfile.getDuplicateMinutesThreshold();
+            Integer duplicateMaxCount = errorContactJobProfile.getDuplicateMaxCount();
+
+            boolean doPage = alwaysPage;
+
+            // We need to start at 1 because this current error isn't in this count
+            int jobcodeEventsWithinThreshold = 1;
+
+            StringBuilder emailFirstPartMessage = new StringBuilder();
+            emailFirstPartMessage.append("\nThe job ");
+            emailFirstPartMessage.append(jobCode);
+            emailFirstPartMessage.append(" has failed");
+
+            if (duplicateThresholdMinutes != null && duplicateMaxCount != null) {
+
+                if (!alwaysPage) {
+                    jobcodeEventsWithinThreshold = jobcodeEventsWithinThreshold +
+                            errorContactEventRepository.numberOfJobCodesNoOlderThanMinutes(jobCode, duplicateThresholdMinutes);
+                    log.error("checked for past jobs and got job # = {}", jobcodeEventsWithinThreshold);
+                }
+
+                emailFirstPartMessage.append(" ");
+                emailFirstPartMessage.append(jobcodeEventsWithinThreshold);
+                emailFirstPartMessage.append(" times.");
+
+                if (jobcodeEventsWithinThreshold >= duplicateMaxCount) {
+                    // it's paging time
+                    log.info("Paging for jobCode = {}", jobCode);
+
+                    doPage = true;
+                }
+            } else {
+                emailFirstPartMessage.append(".");
+            }
+
+            ErrorContactEvent errorContactEvent = new ErrorContactEvent();
+            errorContactEvent.setErrorContactJobProfile(errorContactJobProfile);
+            errorContactEvent.setMessage(message);
+            errorContactEvent.setAction(doPage ? "PAGED" : "EMAILED");
+
+
+            // Page and email
+            if (doPage) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+                Map<String, Object> formMap = new HashMap<>();
+
+                formMap.put("team", derdackConfig.getTeam());
+                formMap.put("subject", subject);
+                formMap.put("body", subject + " - " + message);
+
+                HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(formMap, headers);
+
+                String url = derdackConfig.getBaseUrl() + "/events";
+
+                ResponseEntity<ErrorContactResponse> response = null;
+
+                try {
+                    response = restTemplate.postForEntity(url, requestEntity, ErrorContactResponse.class);
+                } catch (Exception e) {
+                    log.error("Error: ", e);
+                }
+
+                if (response != null && response.getBody() != null) {
+                    resultErrorContactResponse = response.getBody();
+
+                    log.info("Page completed for jobCode = {}", jobCode);
+
+                    emailBody.append(emailFirstPartMessage);
+                    emailBody.append(" The team has been paged with event id ");
+                    emailBody.append(resultErrorContactResponse.getExternalId());
+
+                    errorContactEvent.setPageEventId(resultErrorContactResponse.getExternalId());
+                } else {
+                    log.error("Could not page for jobCode {}", jobCode);
+
+                    emailBody.append(emailFirstPartMessage);
+                    emailBody.append(" An attempt was made to page the team but a page could not be initiated!");
+                }
+
+            } else { // Email only (no page)
+                resultErrorContactResponse = new ErrorContactResponse();
+                resultErrorContactResponse.setExternalId("-1");
+                resultErrorContactResponse.setStatus("Emailed ONLY");
+
+                emailBody.append(" This email is to notify of the problem. No page has been sent");
+            }
+
+            errorContactEventRepository.save(errorContactEvent);
+
+            emailBody.append("\n\nError = " + message);
+
+            EmailDetails emailDetails = new EmailDetails();
+
+            emailDetails.setPriority(Priority.HIGH);
+            emailDetails.setSubject(subject);
+            emailDetails.setBody(emailBody.toString());
+            emailDetails.setRecipients(new String[]{derdackConfig.getRecipientEmail()});
 
             try {
-                response = restTemplate.postForEntity(url, requestEntity, ErrorContactResponse.class);
-            } catch (Exception e) {
-                log.error("Error: ", e);
+                emailService.sendEmail(emailDetails);
+            } catch (LmsEmailTooBigException | MessagingException e) {
+                log.error("Error sending email");
             }
+        } catch (Exception e) {
+            log.error("Error looking up job information");
 
-            if (response != null && response.getBody() != null) {
-                resultErrorContactResponse = response.getBody();
-
-                log.info("Page completed for jobCode = {}", jobCode);
-
-                emailBody.append(emailFirstPartMessage);
-                emailBody.append(" The team has been paged with event id ");
-                emailBody.append(resultErrorContactResponse.getExternalId());
-
-                errorContactEvent.setPageEventId(resultErrorContactResponse.getExternalId());
-            } else {
-                log.error("Could not page for jobCode {}", jobCode);
-
-                emailBody.append(emailFirstPartMessage);
-                emailBody.append(" An attempt was made to page the team but a page could not be initiated!");
-            }
-
-        } else { // Email only (no page)
             resultErrorContactResponse = new ErrorContactResponse();
             resultErrorContactResponse.setExternalId("-1");
-            resultErrorContactResponse.setStatus("Emailed ONLY");
+            resultErrorContactResponse.setStatus("error looking up job information");
 
-            emailBody.append(" This email is to notify of the problem. No page has been sent");
-        }
+            EmailDetails emailDetails = new EmailDetails();
 
-        errorContactEventRepository.save(errorContactEvent);
+            emailDetails.setPriority(Priority.HIGH);
+            emailDetails.setSubject(subject);
+            emailDetails.setBody("Unable to look up job information. Is the database down?");
+            emailDetails.setRecipients(new String[]{derdackConfig.getRecipientEmail()});
 
-        emailBody.append("\n\nError = " + message);
-
-        EmailDetails emailDetails = new EmailDetails();
-
-        emailDetails.setPriority(Priority.HIGH);
-        emailDetails.setSubject(subject);
-        emailDetails.setBody(emailBody.toString());
-        emailDetails.setRecipients(new String[]{derdackConfig.getRecipientEmail()});
-
-        try {
-            emailService.sendEmail(emailDetails);
-        } catch (LmsEmailTooBigException | MessagingException e) {
-            log.error("Error sending email");
+            try {
+                emailService.sendEmail(emailDetails);
+            } catch (LmsEmailTooBigException | MessagingException e2) {
+                log.error("Error sending email", e2);
+            }
         }
 
         return resultErrorContactResponse;
