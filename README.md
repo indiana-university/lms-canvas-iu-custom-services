@@ -26,7 +26,7 @@ Once that has been done, you can autowire in and use the various services:
 private FeatureAccessServiceImpl featureAccessService;
 
 @Autowired
-private SudsServiceImpl sudsService;
+private SisServiceImpl sisService;
 ```
 
 ## Configuration

@@ -40,7 +40,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SudsCourse {
+public class SisCourse {
     private String classNumber;
     private String year;
     private String term;

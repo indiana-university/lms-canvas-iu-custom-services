@@ -1,0 +1,4 @@
+CREATE OR REPLACE VIEW ps_iu_oncext_inst FOLDER = '/sis data' AS
+
+SELECT strm, class_nbr, emplid, "year", term, iu_site_id, name, first_name, last_name, iu_ims_username, emailid, status, attrvalue, iu_active, instr_role, instr_role2, instr_role3, instr_role4, instr_role5, instr_role6, status_dttm
+FROM iu_sis.ps_iu_oncext_inst CONTEXT ('formatted' = 'yes');
